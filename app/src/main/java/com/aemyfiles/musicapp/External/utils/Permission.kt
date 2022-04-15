@@ -19,7 +19,9 @@ class Permission {
             if (!isPermissionsAllowed(context)) {
                 ActivityCompat.requestPermissions(
                         context as Activity,
-                        arrayOf(android.Manifest.permission.READ_EXTERNAL_STORAGE, android.Manifest.permission.WRITE_EXTERNAL_STORAGE),
+                        arrayOf(android.Manifest.permission.READ_EXTERNAL_STORAGE,
+                            android.Manifest.permission.WRITE_EXTERNAL_STORAGE,
+                            android.Manifest.permission.FOREGROUND_SERVICE),
                         MainActivity.REQUEST_CODE
                 )
                 return false

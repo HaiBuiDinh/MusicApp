@@ -1,17 +1,15 @@
 package com.aemyfiles.musicapp.External.activities
 
 import android.app.Activity
-import android.content.ComponentName
-import android.content.Intent
-import android.content.ServiceConnection
+import android.app.NotificationChannel
+import android.app.NotificationManager
+import android.content.*
 import android.content.pm.PackageManager
+import android.os.Build
 import android.os.Bundle
 import android.os.Handler
 import android.os.IBinder
-import android.util.Log
 import android.widget.SeekBar
-import androidx.appcompat.widget.AppCompatSeekBar
-import android.widget.Toast
 import androidx.appcompat.app.AppCompatActivity
 import androidx.lifecycle.Observer
 import androidx.lifecycle.ViewModelProvider
@@ -20,6 +18,8 @@ import com.aemyfiles.musicapp.Domain.AudioDatabase
 import com.aemyfiles.musicapp.Domain.AudioInfo
 import com.aemyfiles.musicapp.Domain.AudioRepository
 import com.aemyfiles.musicapp.External.adapter.ShowListSongAdapter
+import com.aemyfiles.musicapp.External.notification.CreateNotification
+import com.aemyfiles.musicapp.External.notification.Playable
 import com.aemyfiles.musicapp.External.services.AudioService
 import com.aemyfiles.musicapp.External.utils.MediaManager
 import com.aemyfiles.musicapp.External.utils.Permission
@@ -27,29 +27,26 @@ import com.aemyfiles.musicapp.Presenter.AudioViewModel
 import com.aemyfiles.musicapp.Presenter.AudioViewModelFactory
 import com.aemyfiles.musicapp.R
 import kotlinx.android.synthetic.main.activity_main.*
-import java.lang.Runnable
 
-class MainActivity : AppCompatActivity(), ShowListSongAdapter.AdapterCallBack {
+class MainActivity : AppCompatActivity(), ShowListSongAdapter.AdapterCallBack, Playable {
+    companion object {
+        const val REQUEST_CODE: Int = 200
+    }
     lateinit var mViewModel: AudioViewModel
     lateinit var mAudioService: AudioService
     lateinit var mAdapter: ShowListSongAdapter
     private var mListSongs = ArrayList<AudioInfo>()
-    private var mPosition: Int = -1;
     private val mHanlder: Handler = Handler()
+    lateinit var notificationManager: NotificationManager
+    private var isPlaying: Boolean = false
 
     private val mServiceConnection = object : ServiceConnection {
         override fun onServiceConnected(p0: ComponentName?, binder: IBinder?) {
             mAudioService = (binder as AudioService.MyBinder).getService()
             initView()
         }
-
         override fun onServiceDisconnected(p0: ComponentName?) {
         }
-
-    }
-
-    companion object {
-        const val REQUEST_CODE: Int = 200
     }
 
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -58,13 +55,34 @@ class MainActivity : AppCompatActivity(), ShowListSongAdapter.AdapterCallBack {
         val audioRepository = AudioRepository(AudioDatabase(this))
         val factory = AudioViewModelFactory(audioRepository)
         mViewModel = ViewModelProvider(this, factory).get(AudioViewModel::class.java)
-//        initView()
         bindService()
+
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
+            createChannel()
+        }
     }
 
-    override fun onDestroy() {
-        unBindService()
-        super.onDestroy()
+    val broadcastReceiver = object : BroadcastReceiver() {
+        override fun onReceive(context: Context?, intent: Intent?) {
+            val action = intent!!.extras!!.getString("actionname")
+
+            when(action) {
+                CreateNotification.ACTION_PREVIOUS -> onTrackPrevious()
+                CreateNotification.ACTION_PLAY -> {
+                    if (isPlaying) onTrackPause() else onTrackPlay()
+                }
+                CreateNotification.ACTION_NEXT -> onTrackNext()
+            }
+        }
+
+    }
+
+    private fun createChannel() {
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
+            val channel: NotificationChannel = NotificationChannel(CreateNotification.CHANEL_ID, "Music App", NotificationManager.IMPORTANCE_LOW);
+            notificationManager = getSystemService(NotificationManager::class.java)
+            notificationManager?.let { it.createNotificationChannel(channel) }
+        }
     }
 
     private fun bindService() {
@@ -123,6 +141,7 @@ class MainActivity : AppCompatActivity(), ShowListSongAdapter.AdapterCallBack {
             override fun onProgressChanged(seekBar: SeekBar, i: Int, b: Boolean) {
                 if (b) mAudioService.mPlayer.seekTo(i)
             }
+
             override fun onStartTrackingTouch(seekBar: SeekBar) {}
             override fun onStopTrackingTouch(seekBar: SeekBar) {}
         })
@@ -153,9 +172,9 @@ class MainActivity : AppCompatActivity(), ShowListSongAdapter.AdapterCallBack {
     }
 
     override fun onRequestPermissionsResult(
-        requestCode: Int,
-        permissions: Array<String>,
-        grantResults: IntArray
+            requestCode: Int,
+            permissions: Array<String>,
+            grantResults: IntArray
     ) {
         super.onRequestPermissionsResult(requestCode, permissions, grantResults)
         when (requestCode) {
@@ -174,14 +193,35 @@ class MainActivity : AppCompatActivity(), ShowListSongAdapter.AdapterCallBack {
 
     override fun onActivityResult(requestCode: Int, resultCode: Int, data: Intent?) {
         super.onActivityResult(requestCode, resultCode, data)
-        if (resultCode == Activity.RESULT_OK && requestCode == REQUEST_CODE) {
-            //save image to shared preference
-            getData()
-        }
+        if (resultCode == Activity.RESULT_OK && requestCode == REQUEST_CODE) {getData()}
     }
 
     override fun onClickSong() {
         play?.setImageResource(R.drawable.ic_pause)
+    }
+
+    override fun onTrackPrevious() {
+        TODO("Not yet implemented")
+        //CreateNotification().createNotification(this, audioInfo, 1)
+    }
+
+    override fun onTrackPlay() {
+        TODO("Not yet implemented")
+    }
+
+    override fun onTrackPause() {
+        TODO("Not yet implemented")
+    }
+
+    override fun onTrackNext() {
+        TODO("Not yet implemented")
+    }
+
+    override fun onDestroy() {
+        unBindService()
+        super.onDestroy()
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) notificationManager.cancelAll()
+        unregisterReceiver(broadcastReceiver)
     }
 
 }

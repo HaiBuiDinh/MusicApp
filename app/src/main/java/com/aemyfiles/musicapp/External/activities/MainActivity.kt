@@ -9,17 +9,19 @@ import android.os.Build
 import android.os.Bundle
 import android.os.Handler
 import android.os.IBinder
+import android.util.Log
 import android.widget.SeekBar
 import androidx.appcompat.app.AppCompatActivity
 import androidx.lifecycle.Observer
 import androidx.lifecycle.ViewModelProvider
+import androidx.localbroadcastmanager.content.LocalBroadcastManager
 import androidx.recyclerview.widget.LinearLayoutManager
 import com.aemyfiles.musicapp.Domain.AudioDatabase
 import com.aemyfiles.musicapp.Domain.AudioInfo
 import com.aemyfiles.musicapp.Domain.AudioRepository
 import com.aemyfiles.musicapp.External.adapter.ShowListSongAdapter
+import com.aemyfiles.musicapp.External.broadcast.NotificationActionService
 import com.aemyfiles.musicapp.External.notification.CreateNotification
-import com.aemyfiles.musicapp.External.notification.Playable
 import com.aemyfiles.musicapp.External.services.AudioService
 import com.aemyfiles.musicapp.External.utils.MediaManager
 import com.aemyfiles.musicapp.External.utils.Permission
@@ -28,17 +30,15 @@ import com.aemyfiles.musicapp.Presenter.AudioViewModelFactory
 import com.aemyfiles.musicapp.R
 import kotlinx.android.synthetic.main.activity_main.*
 
-class MainActivity : AppCompatActivity(), ShowListSongAdapter.AdapterCallBack, Playable {
+class MainActivity : AppCompatActivity() {
     companion object {
         const val REQUEST_CODE: Int = 200
+        const val UPDATE_LAYOUT: String = "Update_Layout"
     }
     lateinit var mViewModel: AudioViewModel
     lateinit var mAudioService: AudioService
     lateinit var mAdapter: ShowListSongAdapter
-    private var mListSongs = ArrayList<AudioInfo>()
     private val mHanlder: Handler = Handler()
-    lateinit var notificationManager: NotificationManager
-    private var isPlaying: Boolean = false
 
     private val mServiceConnection = object : ServiceConnection {
         override fun onServiceConnected(p0: ComponentName?, binder: IBinder?) {
@@ -52,37 +52,13 @@ class MainActivity : AppCompatActivity(), ShowListSongAdapter.AdapterCallBack, P
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_main)
+        supportActionBar?.hide()
         val audioRepository = AudioRepository(AudioDatabase(this))
         val factory = AudioViewModelFactory(audioRepository)
         mViewModel = ViewModelProvider(this, factory).get(AudioViewModel::class.java)
         bindService()
-
-        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
-            createChannel()
-        }
-    }
-
-    val broadcastReceiver = object : BroadcastReceiver() {
-        override fun onReceive(context: Context?, intent: Intent?) {
-            val action = intent!!.extras!!.getString("actionname")
-
-            when(action) {
-                CreateNotification.ACTION_PREVIOUS -> onTrackPrevious()
-                CreateNotification.ACTION_PLAY -> {
-                    if (isPlaying) onTrackPause() else onTrackPlay()
-                }
-                CreateNotification.ACTION_NEXT -> onTrackNext()
-            }
-        }
-
-    }
-
-    private fun createChannel() {
-        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
-            val channel: NotificationChannel = NotificationChannel(CreateNotification.CHANEL_ID, "Music App", NotificationManager.IMPORTANCE_LOW);
-            notificationManager = getSystemService(NotificationManager::class.java)
-            notificationManager?.let { it.createNotificationChannel(channel) }
-        }
+        createNotificationChannel()
+        registerReceiver()
     }
 
     private fun bindService() {
@@ -96,45 +72,47 @@ class MainActivity : AppCompatActivity(), ShowListSongAdapter.AdapterCallBack, P
     }
 
     private fun initView() {
-        mAdapter = ShowListSongAdapter(mAudioService, this)
-        recycler_view_main.apply {
+        mAdapter = ShowListSongAdapter(mAudioService)
+        recycler_view_main!!.apply {
             layoutManager = LinearLayoutManager(applicationContext)
             adapter = mAdapter
         }
 
-        button_get_data.setOnClickListener {
-            if (Permission.isPermissionsAllowed(this)) getData()
-            else Permission.askForPermissions(this)
-        }
+//        button_get_data.setOnClickListener {
+//            if (Permission.isPermissionsAllowed(this)) getData()
+//            else Permission.askForPermissions(this)
+//        }
         mViewModel.getAllAudio().observe(this, Observer {
-            mAdapter.setData(it)
-            mListSongs = it as ArrayList<AudioInfo>
-
-            if (mAudioService.mPlayer.mQueue.isEmpty()) {
-                mAudioService.mPlayer.mQueue.addAll(it)
+            if (it != null) {
+                mAdapter.setData(it)
+                if (mAudioService.mPlayer.mQueue.isEmpty()) {
+                    mAudioService.mPlayer.mQueue.addAll(it)
+                }
+            } else {
+                if (Permission.isPermissionsAllowed(this)) getData()
+                else Permission.askForPermissions(this)
             }
         })
 
         play.setOnClickListener {
             if(mAudioService.mPlayer.isPlaying()) {
-                mAudioService.mPlayer.pause()
-                play.setImageResource(R.drawable.ic_play)
+                val intent_play = Intent().setAction(CreateNotification.ACTION_PAUSE)
+                sendBroadcast(intent_play)
             } else {
-                mAudioService.mPlayer.play()
-                play.setImageResource(R.drawable.ic_pause)
+                val intent_pause = Intent().setAction(CreateNotification.ACTION_PLAY)
+                sendBroadcast(intent_pause)
             }
+
         }
 
         next.setOnClickListener {
-            play.setImageResource(R.drawable.ic_pause)
-            mAudioService.mPlayer.playNextSong()
-            mAdapter.notifyDataSetChanged()
+            val intent = Intent().setAction(CreateNotification.ACTION_NEXT)
+            sendBroadcast(intent)
         }
 
         previous.setOnClickListener {
-            play.setImageResource(R.drawable.ic_pause)
-            mAudioService.mPlayer.playPreviousSong()
-            mAdapter.notifyDataSetChanged()
+            val intent = Intent().setAction(CreateNotification.ACTION_PREVIOUS)
+            sendBroadcast(intent)
         }
 
         seekBar.setOnSeekBarChangeListener(object : SeekBar.OnSeekBarChangeListener {
@@ -196,32 +174,39 @@ class MainActivity : AppCompatActivity(), ShowListSongAdapter.AdapterCallBack, P
         if (resultCode == Activity.RESULT_OK && requestCode == REQUEST_CODE) {getData()}
     }
 
-    override fun onClickSong() {
-        play?.setImageResource(R.drawable.ic_pause)
-    }
-
-    override fun onTrackPrevious() {
-        TODO("Not yet implemented")
-        //CreateNotification().createNotification(this, audioInfo, 1)
-    }
-
-    override fun onTrackPlay() {
-        TODO("Not yet implemented")
-    }
-
-    override fun onTrackPause() {
-        TODO("Not yet implemented")
-    }
-
-    override fun onTrackNext() {
-        TODO("Not yet implemented")
-    }
 
     override fun onDestroy() {
         unBindService()
         super.onDestroy()
-        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) notificationManager.cancelAll()
-        unregisterReceiver(broadcastReceiver)
+//        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) notificationManager.cancelAll()
+//        unregisterReceiver(broadcastReceiver)
+    }
+
+    private fun createNotificationChannel() {
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
+            val channel = NotificationChannel(CreateNotification.CHANEL_ID, "Music app", NotificationManager.IMPORTANCE_HIGH)
+            val notificationManager: NotificationManager = getSystemService(Context.NOTIFICATION_SERVICE) as NotificationManager
+            notificationManager.createNotificationChannel(channel)
+        }
+    }
+
+    private val broadcastReceiver = object : BroadcastReceiver() {
+        override fun onReceive(context: Context?, intent: Intent?) {
+            Log.d("hai.bui1", "onReceive: main ")
+            if(mAudioService.mPlayer.isPlaying()) {
+                play.setImageResource(R.drawable.ic_pause)
+            } else {
+                play.setImageResource(R.drawable.ic_play)
+            }
+            mAdapter.notifyDataSetChanged()
+        }
+
+    }
+
+    private fun registerReceiver() {
+        val intentFilter = IntentFilter()
+        intentFilter.addAction(UPDATE_LAYOUT)
+        this.applicationContext.registerReceiver(broadcastReceiver, intentFilter)
     }
 
 }

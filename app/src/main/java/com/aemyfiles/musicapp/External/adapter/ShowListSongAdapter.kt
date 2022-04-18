@@ -9,7 +9,7 @@ import com.aemyfiles.musicapp.Domain.AudioInfo
 import com.aemyfiles.musicapp.External.services.AudioService
 import com.aemyfiles.musicapp.R
 
-class ShowListSongAdapter(var mService: AudioService, private val callBack: AdapterCallBack) :
+class ShowListSongAdapter(var mService: AudioService) :
     RecyclerView.Adapter<ShowListSongAdapter.ViewHolder>() {
 
     private var mSongs: List<AudioInfo> = ArrayList()
@@ -35,9 +35,8 @@ class ShowListSongAdapter(var mService: AudioService, private val callBack: Adap
             //TO-DO: kiểm tra xem mQueue của mPlayer có khác không rồi hãy add
             mService.mPlayer.mQueue.addAll(mSongs)
             mService.mPlayer.mCurrentPosSong = position
-            mService.mPlayer.playCurrentSong()
+            mService.onTrackPlay(true)
             notifyDataSetChanged()
-            callBack.onClickSong()
         }
     }
 
@@ -51,7 +50,4 @@ class ShowListSongAdapter(var mService: AudioService, private val callBack: Adap
         notifyDataSetChanged()
     }
 
-    interface AdapterCallBack {
-        fun onClickSong()
-    }
 }

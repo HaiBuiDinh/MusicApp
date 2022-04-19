@@ -18,6 +18,7 @@ class ShowListAlbumAdapter() : RecyclerView.Adapter<ShowListAlbumAdapter.ViewHol
     class ViewHolder(itemView: View): RecyclerView.ViewHolder(itemView) {
         val textView: TextView = itemView.findViewById(R.id.title_album)
         val imageView: ImageView = itemView.findViewById(R.id.thumbnail_album)
+        val textViewTotal: TextView = itemView.findViewById(R.id.total_song)
     }
 
     fun setData(listAlbum: ArrayList<AlbumInfo>) {
@@ -34,8 +35,8 @@ class ShowListAlbumAdapter() : RecyclerView.Adapter<ShowListAlbumAdapter.ViewHol
 
     override fun onBindViewHolder(holder: ViewHolder, position: Int) {
         val albumInfo: AlbumInfo = mListAlbum[position]
-
-
+        holder.textView.text = albumInfo.album_name
+        holder.textViewTotal.text = "${albumInfo.total_song} songs"
     }
 
     override fun getItemCount(): Int {

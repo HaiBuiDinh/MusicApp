@@ -15,9 +15,12 @@ import android.widget.SeekBar
 import androidx.appcompat.app.AppCompatActivity
 import androidx.lifecycle.Observer
 import androidx.lifecycle.ViewModelProvider
+import androidx.recyclerview.widget.GridLayoutManager
 import androidx.recyclerview.widget.LinearLayoutManager
+import com.aemyfiles.musicapp.Domain.AlbumInfo
 import com.aemyfiles.musicapp.Domain.AudioDatabase
 import com.aemyfiles.musicapp.Domain.AudioRepository
+import com.aemyfiles.musicapp.External.adapter.ShowListAlbumAdapter
 import com.aemyfiles.musicapp.External.adapter.ShowListSongAdapter
 import com.aemyfiles.musicapp.External.notification.CreateNotification
 import com.aemyfiles.musicapp.External.services.AudioService
@@ -41,6 +44,7 @@ class MainActivity : AppCompatActivity() {
     lateinit var mViewModel: AudioViewModel
     lateinit var mAudioService: AudioService
     lateinit var mAdapter: ShowListSongAdapter
+    val mAdapterAlbum: ShowListAlbumAdapter = ShowListAlbumAdapter()
     private val mHanlder: Handler = Handler()
 
     private val mServiceConnection = object : ServiceConnection {
@@ -62,6 +66,7 @@ class MainActivity : AppCompatActivity() {
         bindService()
         createNotificationChannel()
         registerReceiver()
+        getAlbum()
     }
 
     private fun bindService() {
@@ -80,6 +85,12 @@ class MainActivity : AppCompatActivity() {
             layoutManager = LinearLayoutManager(applicationContext)
             adapter = mAdapter
         }
+
+        recyclerView!!.apply {
+            layoutManager = GridLayoutManager(applicationContext, 2)
+            adapter = mAdapterAlbum
+        }
+
         mViewModel.getAllAudio().observe(this, Observer {
             if (it.isNotEmpty()) {
                 mAdapter.setData(it)
@@ -232,6 +243,14 @@ class MainActivity : AppCompatActivity() {
         val intentFilter = IntentFilter()
         intentFilter.addAction(UPDATE_LAYOUT)
         this.applicationContext.registerReceiver(broadcastReceiver, intentFilter)
+    }
+
+    private fun getAlbum() {
+        mViewModel.getAllAlbumFromDB()
+        mViewModel.getListAlBum().observe(this, Observer {
+            mAdapterAlbum.setData(it as ArrayList<AlbumInfo>)
+            Log.d("hai.bui1", "getAlbum: ")
+        })
     }
 
 }

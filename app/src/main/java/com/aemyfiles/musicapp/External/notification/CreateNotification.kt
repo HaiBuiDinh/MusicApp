@@ -7,21 +7,12 @@ import android.app.NotificationManager
 import android.app.PendingIntent
 import android.content.Context
 import android.content.Intent
-import android.graphics.Bitmap
-import android.graphics.drawable.Drawable
-import android.net.Uri
 import android.os.Build
-import android.provider.MediaStore
-import android.util.Log
 import android.widget.RemoteViews
 import androidx.core.app.NotificationCompat
 import androidx.core.app.NotificationCompat.FOREGROUND_SERVICE_IMMEDIATE
 import com.aemyfiles.musicapp.External.services.AudioService
 import com.aemyfiles.musicapp.R
-import com.bumptech.glide.Glide
-import com.bumptech.glide.request.target.CustomTarget
-import com.bumptech.glide.request.target.NotificationTarget
-import com.bumptech.glide.request.transition.Transition
 
 class CreateNotification {
     companion object {

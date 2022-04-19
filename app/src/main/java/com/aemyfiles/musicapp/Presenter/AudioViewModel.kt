@@ -8,6 +8,7 @@ import androidx.lifecycle.viewModelScope
 import com.aemyfiles.musicapp.Domain.AlbumInfo
 import com.aemyfiles.musicapp.Domain.AudioInfo
 import com.aemyfiles.musicapp.Domain.AudioRepository
+import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
 
 class AudioViewModel(private val repository: AudioRepository): ViewModel() {
@@ -15,20 +16,20 @@ class AudioViewModel(private val repository: AudioRepository): ViewModel() {
     fun getAllAudio() = repository.getAllAudio()
     val mListAlbum = MutableLiveData<List<AlbumInfo>>()
 
-    fun insert(audioInfo: AudioInfo) = viewModelScope.launch {
+    fun insert(audioInfo: AudioInfo) = viewModelScope.launch(Dispatchers.IO) {
         repository.insert(audioInfo)
     }
 
-    fun delete(audioInfo: AudioInfo) = viewModelScope.launch {
+    fun delete(audioInfo: AudioInfo) = viewModelScope.launch(Dispatchers.IO) {
         repository.delete(audioInfo)
     }
 
-    fun update(audioInfo: AudioInfo) = viewModelScope.launch {
+    fun update(audioInfo: AudioInfo) = viewModelScope.launch(Dispatchers.IO) {
         repository.update(audioInfo)
     }
 
     fun getAllAlbumFromDB() {
-        viewModelScope.launch {
+        viewModelScope.launch(Dispatchers.IO) {
             val listAlbum = ArrayList<AlbumInfo>()
             val cursor = repository.getAllAlbum()
             if (cursor != null) {

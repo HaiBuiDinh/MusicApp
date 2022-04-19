@@ -7,9 +7,9 @@
 
     <androidx.appcompat.widget.AppCompatImageView
         android:id="@+id/thumbnail_album"
-        android:layout_width="96dp"
+        android:layout_width="match_parent"
         android:layout_height="96dp"
-        android:src="@drawable/ic_launcher_background"
+        android:src="@drawable/ic_mq2tra01"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent" />
@@ -26,5 +26,13 @@
         app:layout_constraintEnd_toEndOf="@+id/thumbnail_album"
         app:layout_constraintStart_toStartOf="@+id/thumbnail_album"
         app:layout_constraintTop_toBottomOf="@+id/thumbnail_album" />
+
+    <TextView
+        android:id="@+id/total_song"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="123 songs"
+        app:layout_constraintStart_toStartOf="@+id/title_album"
+        app:layout_constraintTop_toBottomOf="@+id/title_album" />
 
 </androidx.constraintlayout.widget.ConstraintLayout>

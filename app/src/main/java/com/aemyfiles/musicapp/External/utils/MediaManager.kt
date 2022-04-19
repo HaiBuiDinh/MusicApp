@@ -4,6 +4,7 @@ import android.annotation.SuppressLint
 import android.content.Context
 import android.provider.MediaStore
 import com.aemyfiles.musicapp.Domain.AudioInfo
+import kotlinx.coroutines.CoroutineScope
 
 class MediaManager {
     companion object {

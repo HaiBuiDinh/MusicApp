@@ -7,13 +7,21 @@ import android.app.NotificationManager
 import android.app.PendingIntent
 import android.content.Context
 import android.content.Intent
+import android.graphics.Bitmap
+import android.graphics.drawable.Drawable
+import android.net.Uri
 import android.os.Build
+import android.provider.MediaStore
+import android.util.Log
 import android.widget.RemoteViews
 import androidx.core.app.NotificationCompat
 import androidx.core.app.NotificationCompat.FOREGROUND_SERVICE_IMMEDIATE
-import com.aemyfiles.musicapp.External.broadcast.NotificationActionService
 import com.aemyfiles.musicapp.External.services.AudioService
 import com.aemyfiles.musicapp.R
+import com.bumptech.glide.Glide
+import com.bumptech.glide.request.target.CustomTarget
+import com.bumptech.glide.request.target.NotificationTarget
+import com.bumptech.glide.request.transition.Transition
 
 class CreateNotification {
     companion object {
@@ -70,9 +78,10 @@ class CreateNotification {
         notificationLayout.setTextViewText(R.id.noti_collaps_song_name, service.mPlayer.mQueue[service.mPlayer.mCurrentPosSong].display_name)
         notificationLayout.setTextViewText(R.id.noti_collaps_artis, service.mPlayer.mQueue[service.mPlayer.mCurrentPosSong].artist_name)
         notificationLayout.setImageViewResource(R.id.noti_collaps_play, if (service.mPlayer.isPlaying()) R.drawable.ic_pause else R.drawable.ic_play)
+//        notificationLayout.setImageViewBitmap(R.id.noti_collaps_song_thumbnail, )
 
         notificationLayoutExpand.setOnClickPendingIntent(R.id.noti_expand_previous, PendingIntent.getBroadcast(context, 0, intentPrevious, PendingIntent.FLAG_UPDATE_CURRENT))
-        notificationLayoutExpand.setOnClickPendingIntent(R.id.noti_expand_play, PendingIntent.getBroadcast(context, 0, intentPlay, PendingIntent.FLAG_UPDATE_CURRENT))
+        notificationLayoutExpand.setOnClickPendingIntent(R.id.noti_expand_play, PendingIntent.getBroadcast(context, 0, if (service.mPlayer.isPlaying()) intentPause else intentPlay, PendingIntent.FLAG_UPDATE_CURRENT))
         notificationLayoutExpand.setOnClickPendingIntent(R.id.noti_expand_next, PendingIntent.getBroadcast(context, 0, intentNext, PendingIntent.FLAG_UPDATE_CURRENT))
         notificationLayoutExpand.setOnClickPendingIntent(R.id.noti_expand_delete, PendingIntent.getBroadcast(context, 0, intentStopService, PendingIntent.FLAG_UPDATE_CURRENT))
         notificationLayoutExpand.setTextViewText(R.id.noti_expand_song_name, service.mPlayer.mQueue[service.mPlayer.mCurrentPosSong].display_name)
@@ -94,6 +103,9 @@ class CreateNotification {
         mNotification!!.flags = mNotification!!.flags or Notification.FLAG_NO_CLEAR
 
         mNotificationManager!!.notify(1, mNotification)
+
+
         service.startForeground(1, mNotification)
     }
+
 }

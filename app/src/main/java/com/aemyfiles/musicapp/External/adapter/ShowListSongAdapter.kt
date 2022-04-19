@@ -3,10 +3,13 @@ package com.aemyfiles.musicapp.External.adapter
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import android.widget.ImageView
 import android.widget.TextView
 import androidx.recyclerview.widget.RecyclerView
 import com.aemyfiles.musicapp.Domain.AudioInfo
 import com.aemyfiles.musicapp.External.services.AudioService
+import com.aemyfiles.musicapp.External.utils.ItemType
+import com.aemyfiles.musicapp.External.utils.ThumbnailManager
 import com.aemyfiles.musicapp.R
 
 class ShowListSongAdapter(var mService: AudioService) :
@@ -16,6 +19,7 @@ class ShowListSongAdapter(var mService: AudioService) :
 
     class ViewHolder(itemView: View) : RecyclerView.ViewHolder(itemView) {
         val textView: TextView = itemView.findViewById(R.id.tv_song_name)
+        val imageView: ImageView = itemView.findViewById(R.id.thumbnail_song)
     }
 
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): ViewHolder {
@@ -27,6 +31,7 @@ class ShowListSongAdapter(var mService: AudioService) :
 
     override fun onBindViewHolder(holder: ViewHolder, position: Int) {
         val song: AudioInfo = mSongs[position]
+        ThumbnailManager.getInstance().loadThumbnail(ThumbnailManager.ThumbnailInfo(holder.imageView, song.id, song.path, null, 320, ItemType.SONG_TYPE))
         holder.textView.text = song.display_name
         var context = holder.textView.context
         holder.textView.setTextColor(context.getColor(if(mService.mPlayer.mCurrentPosSong == position) android.R.color.holo_blue_light else android.R.color.black))

@@ -5,6 +5,7 @@ import android.app.NotificationChannel
 import android.app.NotificationManager
 import android.content.*
 import android.content.pm.PackageManager
+import android.graphics.Bitmap
 import android.os.Build
 import android.os.Bundle
 import android.os.Handler
@@ -14,21 +15,23 @@ import android.widget.SeekBar
 import androidx.appcompat.app.AppCompatActivity
 import androidx.lifecycle.Observer
 import androidx.lifecycle.ViewModelProvider
-import androidx.localbroadcastmanager.content.LocalBroadcastManager
 import androidx.recyclerview.widget.LinearLayoutManager
 import com.aemyfiles.musicapp.Domain.AudioDatabase
-import com.aemyfiles.musicapp.Domain.AudioInfo
 import com.aemyfiles.musicapp.Domain.AudioRepository
 import com.aemyfiles.musicapp.External.adapter.ShowListSongAdapter
-import com.aemyfiles.musicapp.External.broadcast.NotificationActionService
 import com.aemyfiles.musicapp.External.notification.CreateNotification
 import com.aemyfiles.musicapp.External.services.AudioService
+import com.aemyfiles.musicapp.External.utils.ItemType
 import com.aemyfiles.musicapp.External.utils.MediaManager
 import com.aemyfiles.musicapp.External.utils.Permission
+import com.aemyfiles.musicapp.External.utils.ThumbnailManager
 import com.aemyfiles.musicapp.Presenter.AudioViewModel
 import com.aemyfiles.musicapp.Presenter.AudioViewModelFactory
 import com.aemyfiles.musicapp.R
 import kotlinx.android.synthetic.main.activity_main.*
+import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.GlobalScope
+import kotlinx.coroutines.launch
 
 class MainActivity : AppCompatActivity() {
     companion object {
@@ -77,13 +80,8 @@ class MainActivity : AppCompatActivity() {
             layoutManager = LinearLayoutManager(applicationContext)
             adapter = mAdapter
         }
-
-//        button_get_data.setOnClickListener {
-//            if (Permission.isPermissionsAllowed(this)) getData()
-//            else Permission.askForPermissions(this)
-//        }
         mViewModel.getAllAudio().observe(this, Observer {
-            if (it != null) {
+            if (it.isNotEmpty()) {
                 mAdapter.setData(it)
                 if (mAudioService.mPlayer.mQueue.isEmpty()) {
                     mAudioService.mPlayer.mQueue.addAll(it)
@@ -93,6 +91,11 @@ class MainActivity : AppCompatActivity() {
                 else Permission.askForPermissions(this)
             }
         })
+
+        button_get_data.setOnClickListener {
+            if (Permission.isPermissionsAllowed(this)) getData()
+            else Permission.askForPermissions(this)
+        }
 
         play.setOnClickListener {
             if(mAudioService.mPlayer.isPlaying()) {
@@ -133,8 +136,8 @@ class MainActivity : AppCompatActivity() {
             if (mAudioService.mPlayer.isPlaying()) {
                 seekBar.progress = mAudioService.mPlayer.currentPosition()
                 seekBar.max = mAudioService.mPlayer.duration()
-                tv_time_left.setText("${mAudioService.mPlayer.currentPosition() / 60000}:${(mAudioService.mPlayer.currentPosition() % 60000) / 1000}")
-                tv_time_right.setText("${mAudioService.mPlayer.duration() / 60000}:${(mAudioService.mPlayer.duration() % 60000) / 1000}")
+                tv_time_left.text = "${mAudioService.mPlayer.currentPosition() / 60000}:${(mAudioService.mPlayer.currentPosition() % 60000) / 1000}"
+                tv_time_right.text = "${mAudioService.mPlayer.duration() / 60000}:${(mAudioService.mPlayer.duration() % 60000) / 1000}"
             }
             mHanlder.postDelayed(this, 15)
         }
@@ -142,11 +145,33 @@ class MainActivity : AppCompatActivity() {
 
 
     private fun getData() {
-        val listSong = MediaManager.getDataFromMedia(this)
-        listSong?.let {
-            val allSong = it.toMutableList()
-            allSong.forEach { it -> mViewModel.insert(it) }
+        val listSong = MediaManager.getDataFromMedia(applicationContext)
+        val mapSong = HashMap<String, String>()
+        listSong?.let { list ->
+            val allSong = list.toMutableList()
+            val thumbnailCallback = ThumbnailManager.ThumbnailCallback { albumName, path, bitmap ->
+                Log.d("long.vt", "onSuccess: $bitmap")
+                mapSong[albumName!!] = path!!
+            }
+
+            allSong.forEach {
+                mViewModel.insert(it)
+                if (mapSong[it.album_name] == null)
+                    ThumbnailManager.getInstance().loadThumbnail(
+                        ThumbnailManager.ThumbnailInfo(
+                            null,
+                            it.id,
+                            it.path,
+                            it.album_name,
+                            null,
+                            320,
+                            ItemType.SONG_TYPE,
+                            thumbnailCallback
+                        )
+                    )
+            }
         }
+
     }
 
     override fun onRequestPermissionsResult(

@@ -8,14 +8,13 @@ import android.content.Intent
 import android.content.IntentFilter
 import android.os.Binder
 import android.os.IBinder
-import androidx.localbroadcastmanager.content.LocalBroadcastManager
 import com.aemyfiles.musicapp.External.activities.MainActivity
 import com.aemyfiles.musicapp.External.broadcast.NotificationActionService
 import com.aemyfiles.musicapp.External.notification.CreateNotification
 import com.aemyfiles.musicapp.External.notification.Playable
 import com.aemyfiles.musicapp.External.utils.MyPlayer
 
-class AudioService : Service(), Playable {
+class MediaPlayService : Service(), Playable {
 
     lateinit var mPlayer: MyPlayer
     lateinit var mBinder: Binder
@@ -40,8 +39,8 @@ class AudioService : Service(), Playable {
 
 
     inner class MyBinder : Binder() {
-        fun getService(): AudioService {
-            return this@AudioService
+        fun getService(): MediaPlayService {
+            return this@MediaPlayService
         }
     }
 

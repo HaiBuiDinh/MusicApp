@@ -6,16 +6,16 @@ import android.view.ViewGroup
 import android.widget.ImageView
 import android.widget.TextView
 import androidx.recyclerview.widget.RecyclerView
-import com.aemyfiles.musicapp.Domain.AudioInfo
-import com.aemyfiles.musicapp.External.services.AudioService
+import com.aemyfiles.musicapp.Domain.SongInfo
+import com.aemyfiles.musicapp.External.services.MediaPlayService
 import com.aemyfiles.musicapp.External.utils.ItemType
 import com.aemyfiles.musicapp.External.utils.ThumbnailManager
 import com.aemyfiles.musicapp.R
 
-class ShowListSongAdapter(var mService: AudioService) :
+class ShowListSongAdapter(var mService: MediaPlayService) :
     RecyclerView.Adapter<ShowListSongAdapter.ViewHolder>() {
 
-    private var mSongs: List<AudioInfo> = ArrayList()
+    private var mSongs: List<SongInfo> = ArrayList()
 
     class ViewHolder(itemView: View) : RecyclerView.ViewHolder(itemView) {
         val textView: TextView = itemView.findViewById(R.id.tv_song_name)
@@ -30,9 +30,10 @@ class ShowListSongAdapter(var mService: AudioService) :
     }
 
     override fun onBindViewHolder(holder: ViewHolder, position: Int) {
-        val song: AudioInfo = mSongs[position]
-        ThumbnailManager.getInstance().loadThumbnail(ThumbnailManager.ThumbnailInfo(holder.imageView, song.id, song.path, null, 320, ItemType.SONG_TYPE))
+        val song: SongInfo = mSongs[position]
+        ThumbnailManager.getInstance().loadThumbnail(ThumbnailManager.ThumbnailInfo(holder.imageView, song.id, song.path, 320, ItemType.SONG_TYPE))
         holder.textView.text = song.display_name
+        holder.imageView.clipToOutline = true
         var context = holder.textView.context
         holder.textView.setTextColor(context.getColor(if(mService.mPlayer.mCurrentPosSong == position) android.R.color.holo_blue_light else android.R.color.black))
         holder.itemView.setOnClickListener {
@@ -49,7 +50,7 @@ class ShowListSongAdapter(var mService: AudioService) :
         return if (mSongs == null) 0 else mSongs.size;
     }
 
-    fun setData(songs: List<AudioInfo>) {
+    fun setData(songs: List<SongInfo>) {
         if (songs == null) return
         mSongs = songs
         notifyDataSetChanged()

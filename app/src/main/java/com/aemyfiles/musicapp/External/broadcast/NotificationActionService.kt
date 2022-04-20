@@ -5,9 +5,9 @@ import android.content.Context
 import android.content.Intent
 import android.util.Log
 import com.aemyfiles.musicapp.External.notification.CreateNotification
-import com.aemyfiles.musicapp.External.services.AudioService
+import com.aemyfiles.musicapp.External.services.MediaPlayService
 
-class NotificationActionService(private val mService: AudioService): BroadcastReceiver() {
+class NotificationActionService(private val mService: MediaPlayService): BroadcastReceiver() {
     override fun onReceive(context: Context?, intent: Intent?) {
 
         intent?.let {

@@ -2,11 +2,11 @@ package com.aemyfiles.musicapp.External.utils
 
 import android.content.Context
 import android.media.MediaPlayer
-import com.aemyfiles.musicapp.Domain.AudioInfo
+import com.aemyfiles.musicapp.Domain.SongInfo
 
 class MyPlayer(val context: Context) {
     private var mPlayer: MediaPlayer = MediaPlayer()
-    var mQueue: ArrayList<AudioInfo> = ArrayList()
+    var mQueue: ArrayList<SongInfo> = ArrayList()
     var mCurrentPosSong: Int = -1;
 
     fun setDataSource(path: String) {
@@ -60,8 +60,8 @@ class MyPlayer(val context: Context) {
     }
 
     fun playCurrentSong() {
-        var audioInfo = mQueue[mCurrentPosSong]
-        audioInfo?.let {
+        var songInfo = mQueue[mCurrentPosSong]
+        songInfo?.let {
             try {
                 reset()
                 setDataSource(it.path)

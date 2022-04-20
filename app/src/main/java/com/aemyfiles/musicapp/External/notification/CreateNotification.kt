@@ -11,7 +11,7 @@ import android.os.Build
 import android.widget.RemoteViews
 import androidx.core.app.NotificationCompat
 import androidx.core.app.NotificationCompat.FOREGROUND_SERVICE_IMMEDIATE
-import com.aemyfiles.musicapp.External.services.AudioService
+import com.aemyfiles.musicapp.External.services.MediaPlayService
 import com.aemyfiles.musicapp.R
 
 class CreateNotification {
@@ -29,7 +29,7 @@ class CreateNotification {
     }
 
     @SuppressLint("RemoteViewLayout")
-    fun createNotification(context: Context, service: AudioService) {
+    fun createNotification(context: Context, service: MediaPlayService) {
         mNotificationManager =
             context.getSystemService(Context.NOTIFICATION_SERVICE) as NotificationManager
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {

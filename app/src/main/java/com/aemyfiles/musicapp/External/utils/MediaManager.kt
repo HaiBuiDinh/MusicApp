@@ -3,14 +3,13 @@ package com.aemyfiles.musicapp.External.utils
 import android.annotation.SuppressLint
 import android.content.Context
 import android.provider.MediaStore
-import com.aemyfiles.musicapp.Domain.AudioInfo
-import kotlinx.coroutines.CoroutineScope
+import com.aemyfiles.musicapp.Domain.SongInfo
 
 class MediaManager {
     companion object {
         @SuppressLint("Range")
-        fun getDataFromMedia(context: Context): List<AudioInfo> {
-            val list = ArrayList<AudioInfo>()
+        fun getDataFromMedia(context: Context): List<SongInfo> {
+            val list = ArrayList<SongInfo>()
             val uri = MediaStore.Audio.Media.EXTERNAL_CONTENT_URI
             val projection = arrayOf(
                     MediaStore.Audio.Media._ID,
@@ -43,7 +42,7 @@ class MediaManager {
                     val artirstId = cursor.getInt(cursor.getColumnIndex(MediaStore.Audio.Media.ARTIST_ID))
                     val artist = cursor.getString(cursor.getColumnIndex(MediaStore.Audio.Media.ARTIST))
                     val date = cursor.getString(cursor.getColumnIndex(MediaStore.Audio.Media.DATE_ADDED))
-                    val song = AudioInfo(songId, path, albumId, album, artirstId, artist, dur, size, date, title)
+                    val song = SongInfo(songId, path, albumId, album, artirstId, artist, dur, size, date, title)
                     list.add(song)
                 }
                 cursor.close()

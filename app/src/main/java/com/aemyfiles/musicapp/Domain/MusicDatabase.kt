@@ -5,14 +5,15 @@ import androidx.room.Database
 import androidx.room.Room
 import androidx.room.RoomDatabase
 
-@Database(entities = [AudioInfo::class], version = 1, exportSchema = false)
-abstract class AudioDatabase: RoomDatabase() {
+@Database(entities = [SongInfo::class, AlbumInfo::class], version = 1, exportSchema = false)
+abstract class MusicDatabase: RoomDatabase() {
 
     abstract fun audioDao(): AudioDao
+    abstract fun albumDao(): AlbumDAO
 
     companion object{
         @Volatile
-        private var INSTANCE: AudioDatabase? = null
+        private var INSTANCE: MusicDatabase? = null
         private val LOCK = Any()
 
         operator fun invoke(context: Context) = INSTANCE?: synchronized(LOCK) {
@@ -22,6 +23,6 @@ abstract class AudioDatabase: RoomDatabase() {
         }
 
         private fun createDatabase(context: Context) =
-            Room.databaseBuilder(context.applicationContext, AudioDatabase::class.java, "AudioDatabase.db").build()
+            Room.databaseBuilder(context.applicationContext, MusicDatabase::class.java, "AudioDatabase.db").build()
     }
 }

@@ -45,15 +45,14 @@ public class ThumbnailManager {
 
     public void loadThumbnail(ThumbnailInfo info) {
         Object bmp = MemoryCache.getInstance().getCache(info.mKey);
-        if (bmp != null && bmp instanceof Bitmap) {
+        if (bmp instanceof Bitmap) {
             if (info.mView != null) info.mView.setImageBitmap((Bitmap) bmp);
             info.mBmp = (Bitmap) bmp;
-            if (info.mCallback != null) {
-                info.mCallback.onSuccess(info.mAlbumName, info.mPath, info.mBmp);
-            }
+            if (info.mCallback != null) info.mCallback.onSuccess(info.mKey, info.mPath);
         } else {
-            if (bmp != null && bmp instanceof Boolean) {
-                if (info.mView != null) info.mView.setImageResource(ItemType.Companion.getIdByItemType(info.mItemType));
+            if (bmp instanceof Boolean) {
+                if (info.mView != null)
+                    info.mView.setImageResource(ItemType.Companion.getIdByItemType(info.mItemType));
             } else {
                 mThumbnailHandler[mCurThreadIndex].sendMessageAtFrontOfQueue(mThumbnailHandler[mCurThreadIndex].obtainMessage(0, info));
                 mCurThreadIndex++;
@@ -65,7 +64,7 @@ public class ThumbnailManager {
     }
 
     public interface ThumbnailCallback {
-        void onSuccess(String albumName, String path, Bitmap bitmap);
+        void onSuccess(int albumId, String path);
     }
 
     private final class ThumbnailHandler extends Handler {
@@ -94,12 +93,11 @@ public class ThumbnailManager {
                     if (info.mBmp != null) {
                         MemoryCache.getInstance().addCache(info.mKey, info.mBmp);
                         if (info.mView != null) info.mView.setImageBitmap(info.mBmp);
-                        if (info.mCallback != null) {
-                            info.mCallback.onSuccess(info.mAlbumName, info.mPath, info.mBmp);
-                        }
+                        if (info.mCallback != null) info.mCallback.onSuccess(info.mKey, info.mPath);
                     } else {
                         MemoryCache.getInstance().addCache(info.mKey, false);
-                        if (info.mView != null) info.mView.setImageResource(ItemType.Companion.getIdByItemType(info.mItemType));
+                        if (info.mView != null)
+                            info.mView.setImageResource(ItemType.Companion.getIdByItemType(info.mItemType));
                     }
                 }
             }
@@ -110,30 +108,25 @@ public class ThumbnailManager {
         public int mKey;
         public ImageView mView;
         public String mPath;
-        public String mAlbumName;
         public Bitmap mBmp;
         public int mSize;
         public ItemType mItemType;
         public ThumbnailCallback mCallback;
 
-        public ThumbnailInfo(ImageView view, int key, String path, Bitmap bitmap, int size, ItemType itemType) {
+        public ThumbnailInfo(ImageView view, int key, String path, int size, ItemType itemType) {
             mView = view;
             mPath = path;
-            mBmp = bitmap;
             mKey = key;
             mSize = size;
             mItemType = itemType;
         }
 
-        public ThumbnailInfo(ImageView view, int key, String path, String albumName, Bitmap bitmap, int size, ItemType itemType, ThumbnailCallback callback) {
-            mView = view;
+        public ThumbnailInfo(int key, String path, int size, ItemType itemType, ThumbnailCallback callback) {
             mPath = path;
-            mBmp = bitmap;
             mKey = key;
             mSize = size;
             mItemType = itemType;
             mCallback = callback;
-            mAlbumName = albumName;
         }
     }
 }

@@ -20,11 +20,11 @@
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent" />
 
-    <TextView
+    <com.aemyfiles.musicapp.External.utils.VerticalTextView
         android:id="@+id/textView2"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:rotation="270"
+        android:paddingVertical="16dp"
         android:text="ALBUM"
         android:textStyle="bold"
         app:layout_constraintBottom_toBottomOf="@+id/recyclerView"
@@ -35,16 +35,15 @@
         android:id="@+id/recyclerView"
         android:layout_width="0dp"
         android:layout_height="wrap_content"
-        android:layout_marginEnd="16dp"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toEndOf="@+id/textView2"
         app:layout_constraintTop_toBottomOf="@+id/button_get_data" />
 
-    <TextView
+    <com.aemyfiles.musicapp.External.utils.VerticalTextView
         android:id="@+id/textView4"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:rotation="270"
+        android:paddingVertical="16dp"
         android:text="SONGS"
         android:textStyle="bold"
         app:layout_constraintBottom_toBottomOf="@+id/recycler_view_main"

@@ -18,14 +18,12 @@
     <com.gauravk.bubblenavigation.BubbleNavigationLinearView
         android:id="@+id/custom_navigation_bar"
         android:layout_width="match_parent"
-        android:layout_height="wrap_content"
+        android:layout_height="60dp"
         android:layout_gravity="bottom"
-        android:layout_marginStart="16dp"
-        android:layout_marginEnd="16dp"
-        android:layout_marginBottom="8dp"
+        android:layout_marginStart="20dp"
+        android:layout_marginEnd="20dp"
         android:background="@drawable/rounded_rect_white"
-        android:elevation="0dp"
-        android:padding="2dp"
+        android:padding="4dp"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent">
@@ -36,7 +34,7 @@
             android:layout_height="wrap_content"
             android:layout_weight="1"
             app:bt_active="true"
-            app:bt_colorActive="@color/color_bottom_bar_active"
+            app:bt_colorActive="#262345"
             app:bt_colorInactive="@color/color_bottom_bar_inactive"
             app:bt_shape="@drawable/backround_bottom_bar_home"
             app:bt_title="Home" />
@@ -47,7 +45,7 @@
             android:layout_height="wrap_content"
             android:layout_weight="1"
             app:bt_active="false"
-            app:bt_colorActive="@color/color_bottom_bar_active"
+            app:bt_colorActive="#262345"
             app:bt_colorInactive="@color/color_bottom_bar_inactive"
             app:bt_icon="@drawable/ic_volume_up"
             app:bt_shape="@drawable/backround_bottom_bar_home"
@@ -59,9 +57,9 @@
             android:layout_height="wrap_content"
             android:layout_weight="1"
             app:bt_active="false"
-            app:bt_colorActive="@color/color_bottom_bar_active"
+            app:bt_colorActive="#262345"
             app:bt_colorInactive="@color/color_bottom_bar_inactive"
-            app:bt_icon="@drawable/ic_volume_down"
+            app:bt_icon="@drawable/ic_search"
             app:bt_shape="@drawable/backround_bottom_bar_home"
             app:bt_title="Analyze" />
 

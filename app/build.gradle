@@ -46,6 +46,7 @@ dependencies {
     androidTestImplementation 'androidx.test.espresso:espresso-core:3.4.0'
 
     implementation "androidx.activity:activity-ktx:$rootProject.activityVersion"
+    implementation "androidx.fragment:fragment-ktx:1.4.1"
     implementation 'org.jetbrains.anko:anko-commons:0.10.2'
     implementation 'com.google.code.gson:gson:2.8.7'
 
@@ -69,4 +70,7 @@ dependencies {
     implementation "androidx.lifecycle:lifecycle-extensions:$lifecycle_version"
     implementation "androidx.lifecycle:lifecycle-viewmodel-ktx:$lifecycle_version"
     kapt "androidx.lifecycle:lifecycle-compiler:$lifecycle_version"
+
+    //Other
+    implementation 'com.gauravk.bubblenavigation:bubblenavigation:1.0.7'
 }

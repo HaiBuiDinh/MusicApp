@@ -10,12 +10,12 @@
         android:id="@+id/layout_search"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:layout_marginStart="16dp"
+        android:layout_marginStart="20dp"
         android:layout_marginTop="16dp"
-        android:layout_marginEnd="16dp"
-        android:padding="4dp"
+        android:layout_marginEnd="20dp"
         android:background="@drawable/background_search_home"
         android:orientation="horizontal"
+        android:padding="4dp"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintHorizontal_bias="0.52"
         app:layout_constraintStart_toStartOf="parent"
@@ -23,16 +23,24 @@
 
         <EditText
             android:layout_width="match_parent"
-            android:layout_height="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_gravity="center_vertical"
+            android:layout_marginStart="20dp"
             android:layout_weight="1"
             android:background="@android:color/transparent"
-            android:hint="Search here" />
+            android:gravity="center_vertical"
+            android:hint="Search here"
+            android:textColor="#FFFFFF"
+            android:textColorHint="#FFFFFF"
+            android:textSize="20sp" />
 
         <ImageView
-            android:layout_width="?android:attr/actionBarSize"
-            android:layout_height="?android:attr/actionBarSize"
+            android:layout_width="32dp"
+            android:layout_height="32dp"
+            android:layout_marginVertical="16dp"
+            android:layout_marginEnd="26dp"
             android:background="@drawable/background_icon_search_home"
-            android:padding="12dp"
+            android:padding="4dp"
             android:src="@drawable/ic_search" />
     </androidx.appcompat.widget.LinearLayoutCompat>
 
@@ -40,9 +48,12 @@
         android:id="@+id/textView2"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:paddingVertical="16dp"
-        android:text="Recent Playlists"
+        android:layout_marginHorizontal="18dp"
+        android:gravity="center"
+        android:text="Recent playlist"
+        android:textSize="18sp"
         android:textStyle="bold"
+        android:textColor="#262345"
         app:layout_constraintBottom_toBottomOf="@+id/recycler_recent_playlist"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="@+id/recycler_recent_playlist" />
@@ -51,6 +62,7 @@
         android:id="@+id/recycler_recent_playlist"
         android:layout_width="0dp"
         android:layout_height="wrap_content"
+        android:layout_marginStart="18dp"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toEndOf="@+id/textView2"
         app:layout_constraintTop_toBottomOf="@+id/layout_search" />
@@ -59,9 +71,11 @@
         android:id="@+id/textView4"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:paddingVertical="16dp"
+        android:layout_marginStart="18dp"
         android:text="Recent songs"
         android:textStyle="bold"
+        android:textSize="18sp"
+        android:textColor="#262345"
         app:layout_constraintBottom_toBottomOf="@+id/recycler_recent_song"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="@+id/recycler_recent_song" />
@@ -70,12 +84,12 @@
         android:id="@+id/recycler_recent_song"
         android:layout_width="0dp"
         android:layout_height="0dp"
+        android:layout_marginStart="18dp"
         android:layout_marginTop="16dp"
         android:layout_marginEnd="16dp"
         app:layout_constraintBottom_toTopOf="@+id/linearLayoutCompat2"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toEndOf="@+id/textView4"
-        app:layout_constraintStart_toStartOf="@+id/recycler_recent_playlist"
         app:layout_constraintTop_toBottomOf="@+id/recycler_recent_playlist" />
 
     <androidx.appcompat.widget.LinearLayoutCompat

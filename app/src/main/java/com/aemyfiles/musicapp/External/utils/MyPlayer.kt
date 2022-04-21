@@ -2,7 +2,7 @@ package com.aemyfiles.musicapp.External.utils
 
 import android.content.Context
 import android.media.MediaPlayer
-import com.aemyfiles.musicapp.Domain.SongInfo
+import com.aemyfiles.musicapp.Domain.entity.SongInfo
 
 class MyPlayer(val context: Context) {
     private var mPlayer: MediaPlayer = MediaPlayer()

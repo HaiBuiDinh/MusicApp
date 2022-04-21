@@ -3,7 +3,7 @@ package com.aemyfiles.musicapp.External.utils
 import android.annotation.SuppressLint
 import android.content.Context
 import android.provider.MediaStore
-import com.aemyfiles.musicapp.Domain.SongInfo
+import com.aemyfiles.musicapp.Domain.entity.SongInfo
 
 class MediaManager {
     companion object {

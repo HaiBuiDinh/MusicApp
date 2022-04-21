@@ -1,8 +1,9 @@
-package com.aemyfiles.musicapp.Domain
+package com.aemyfiles.musicapp.Domain.dao
 
 import android.database.Cursor
 import androidx.lifecycle.LiveData
 import androidx.room.*
+import com.aemyfiles.musicapp.Domain.entity.SongInfo
 
 @Dao
 interface AudioDao {
@@ -30,4 +31,7 @@ interface AudioDao {
 
     @Query("SELECT * FROM audio_info_table where album_id = :albumId ORDER BY album_name")
     fun getListAudioByAlbumId(albumId: Int): List<SongInfo>
+
+    @Query("SELECT * FROM audio_info_table limit 10")
+    fun getSongForEmptyRecent(): List<SongInfo>
 }

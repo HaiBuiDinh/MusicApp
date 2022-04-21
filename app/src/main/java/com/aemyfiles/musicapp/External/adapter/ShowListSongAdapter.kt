@@ -6,7 +6,7 @@ import android.view.ViewGroup
 import android.widget.ImageView
 import android.widget.TextView
 import androidx.recyclerview.widget.RecyclerView
-import com.aemyfiles.musicapp.Domain.SongInfo
+import com.aemyfiles.musicapp.Domain.entity.SongInfo
 import com.aemyfiles.musicapp.External.services.MediaPlayService
 import com.aemyfiles.musicapp.External.utils.ItemType
 import com.aemyfiles.musicapp.External.utils.ThumbnailManager

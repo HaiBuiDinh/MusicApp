@@ -6,10 +6,8 @@ import android.view.View
 import android.view.ViewGroup
 import android.widget.ImageView
 import android.widget.TextView
-import androidx.appcompat.view.menu.MenuView
-import androidx.core.widget.ImageViewCompat
 import androidx.recyclerview.widget.RecyclerView
-import com.aemyfiles.musicapp.Domain.AlbumInfo
+import com.aemyfiles.musicapp.Domain.entity.AlbumInfo
 import com.aemyfiles.musicapp.External.utils.ItemType
 import com.aemyfiles.musicapp.External.utils.ThumbnailManager
 import com.aemyfiles.musicapp.Presenter.MusicViewModel

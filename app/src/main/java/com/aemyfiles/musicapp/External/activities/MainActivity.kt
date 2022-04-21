@@ -11,13 +11,12 @@ import android.os.Handler
 import android.os.IBinder
 import android.util.Log
 import android.widget.SeekBar
+import androidx.activity.viewModels
 import androidx.appcompat.app.AppCompatActivity
 import androidx.lifecycle.Observer
-import androidx.lifecycle.ViewModelProvider
 import androidx.recyclerview.widget.LinearLayoutManager
-import com.aemyfiles.musicapp.Domain.AlbumInfo
-import com.aemyfiles.musicapp.Domain.MusicDatabase
-import com.aemyfiles.musicapp.Domain.MusicRepository
+import com.aemyfiles.musicapp.Domain.entity.AlbumInfo
+import com.aemyfiles.musicapp.Domain.MusicApplication
 import com.aemyfiles.musicapp.External.adapter.CenterZoomLayoutManager
 import com.aemyfiles.musicapp.External.adapter.ShowListAlbumAdapter
 import com.aemyfiles.musicapp.External.adapter.ShowListSongAdapter
@@ -25,12 +24,9 @@ import com.aemyfiles.musicapp.External.notification.CreateNotification
 import com.aemyfiles.musicapp.External.services.MediaPlayService
 import com.aemyfiles.musicapp.External.utils.Permission
 import com.aemyfiles.musicapp.Presenter.MusicViewModel
-import com.aemyfiles.musicapp.Presenter.AudioViewModelFactory
+import com.aemyfiles.musicapp.Presenter.MusicViewModelFactory
 import com.aemyfiles.musicapp.R
 import kotlinx.android.synthetic.main.activity_main.*
-import kotlinx.coroutines.Dispatchers
-import kotlinx.coroutines.GlobalScope
-import kotlinx.coroutines.launch
 
 class MainActivity : AppCompatActivity() {
     companion object {
@@ -38,19 +34,20 @@ class MainActivity : AppCompatActivity() {
         const val UPDATE_LAYOUT: String = "Update_Layout"
     }
 
-    lateinit var mViewModel: MusicViewModel
+    val mViewModel: MusicViewModel by viewModels {
+        MusicViewModelFactory((application as MusicApplication).repository)
+    }
     lateinit var mMediaPlayService: MediaPlayService
     lateinit var mAdapter: ShowListSongAdapter
-    lateinit var mRepository: MusicRepository
     lateinit var mAdapterAlbum: ShowListAlbumAdapter
     private val mHanlder: Handler = Handler()
 
     private val mServiceConnection = object : ServiceConnection {
         override fun onServiceConnected(p0: ComponentName?, binder: IBinder?) {
             mMediaPlayService = (binder as MediaPlayService.MyBinder).getService()
-            mRepository = MusicRepository(MusicDatabase(this@MainActivity))
-            val factory = AudioViewModelFactory(mRepository)
-            mViewModel = ViewModelProvider(this@MainActivity, factory).get(MusicViewModel::class.java)
+//            mRepository = MusicRepository(MusicDatabase(this@MainActivity))
+//            val factory = AudioViewModelFactory(mRepository)
+//            mViewModel = ViewModelProvider(this@MainActivity, factory).get(MusicViewModel::class.java)
             initView()
             getAlbum()
         }
@@ -161,34 +158,7 @@ class MainActivity : AppCompatActivity() {
 
 
     private fun syncMediaProvider() {
-        GlobalScope.launch(Dispatchers.IO) {
-            mRepository.syncFromProvider(applicationContext)
-        }
-//        listSong?.let { list ->
-//            val allSong = list.toMutableList()
-//            val thumbnailCallback = ThumbnailManager.ThumbnailCallback { albumName, path, bitmap ->
-//                Log.d("long.vt", "onSuccess: $bitmap")
-//                mapSong[albumName!!] = path!!
-//            }
-//
-//            allSong.forEach {
-//                mViewModel.insert(it)
-//                if (mapSong[it.album_name] == null)
-//                    ThumbnailManager.getInstance().loadThumbnail(
-//                        ThumbnailManager.ThumbnailInfo(
-//                            null,
-//                            it.id,
-//                            it.path,
-//                            it.album_name,
-//                            null,
-//                            320,
-//                            ItemType.SONG_TYPE,
-//                            thumbnailCallback
-//                        )
-//                    )
-//            }
-//        }
-
+        mViewModel.syncFromProvider(applicationContext)
     }
 
     override fun onRequestPermissionsResult(

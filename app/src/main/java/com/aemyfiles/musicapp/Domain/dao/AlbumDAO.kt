@@ -1,7 +1,8 @@
-package com.aemyfiles.musicapp.Domain
+package com.aemyfiles.musicapp.Domain.dao
 
 import androidx.lifecycle.LiveData
 import androidx.room.*
+import com.aemyfiles.musicapp.Domain.entity.AlbumInfo
 
 @Dao
 interface AlbumDAO {

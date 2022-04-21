@@ -1,4 +1,4 @@
-package com.aemyfiles.musicapp.Domain
+package com.aemyfiles.musicapp.Domain.entity
 
 import androidx.room.ColumnInfo
 import androidx.room.Entity

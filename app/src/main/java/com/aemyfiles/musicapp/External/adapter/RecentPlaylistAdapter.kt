@@ -37,14 +37,7 @@ class RecentPlaylistAdapter(): RecyclerView.Adapter<RecentPlaylistAdapter.ViewHo
         val playList = mListPlayList[position]
         holder.itemView.clipToOutline = true
         holder.titlePlaylist.text = playList.name_entity
-        if (playList.id >= 0){
-            holder.totalSong.text = "${playList.total} songs"
-        }
-        else {
-            holder.totalSong.visibility = View.GONE
-            holder.thumbPlaylist.setImageResource(R.drawable.ic_add)
-            holder.titlePlaylist.gravity = Gravity.CENTER
-        }
+        holder.totalSong.text = "${playList.total} songs"
     }
 
     override fun getItemCount(): Int {

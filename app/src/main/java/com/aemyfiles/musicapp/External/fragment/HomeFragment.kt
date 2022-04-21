@@ -77,9 +77,7 @@ class HomeFragment(val mMusicViewModel: MusicViewModel, val mService: MediaPlayS
                 listTemp.add(RecentInfo(2, 2, "My playlist 4", 81, true))
                 listTemp.add(RecentInfo(3, 3, "My playlist 5", 9, true))
                 listTemp.add(RecentInfo(4, 4, "My playlist 6", 64, true))
-                listTemp.add(RecentInfo(5, 5, "My playlist 1", 12, true))
-
-                listTemp.add(RecentInfo(-1, -1, "Add new", 0, true))
+                listTemp.add(RecentInfo(5, 5, "My playlist 7", 12, true))
             }
             mPlayListAdapter.setData(listTemp)
         })

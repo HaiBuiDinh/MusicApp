@@ -78,7 +78,7 @@ class ShowListAlbumAdapter(private val mViewModel: MusicViewModel) : RecyclerVie
             Log.d("long.vt", "ShowListALbumAdapter onBindViewHolder: " + albumInfo.thumbnail)
         }
         if (albumInfo.thumbnail.equals("NOTHUMBNAIL"))
-            holder.imageView.setImageResource(R.drawable.ic_album)
+            holder.imageView.setImageResource(R.drawable.ic_groove)
         else ThumbnailManager.getInstance().loadThumbnail(
             ThumbnailManager.ThumbnailInfo(
                 holder.imageView,

@@ -14,6 +14,8 @@ import androidx.appcompat.app.AppCompatActivity
 import androidx.fragment.app.Fragment
 import com.aemyfiles.musicapp.Domain.MusicApplication
 import com.aemyfiles.musicapp.External.fragment.HomeFragment
+import com.aemyfiles.musicapp.External.fragment.LibraryFragment
+import com.aemyfiles.musicapp.External.fragment.SettingFragment
 import com.aemyfiles.musicapp.External.notification.CreateNotification
 import com.aemyfiles.musicapp.External.services.MediaPlayService
 import com.aemyfiles.musicapp.External.utils.Permission
@@ -21,11 +23,15 @@ import com.aemyfiles.musicapp.Presenter.MusicViewModel
 import com.aemyfiles.musicapp.Presenter.MusicViewModelFactory
 import com.aemyfiles.musicapp.R
 import kotlinx.android.synthetic.main.activity_main.*
+import kotlinx.android.synthetic.main.activity_main2.*
 
 class MainActivity2 : AppCompatActivity() {
     companion object {
         const val REQUEST_CODE: Int = 200
         const val UPDATE_LAYOUT: String = "Update_Layout"
+        const val HOME_FRAGMENT = 0
+        const val LIBRARY_FRAGMENT = 1
+        const val SETTING_FRAGMENT = 2
     }
 
     val mViewModel: MusicViewModel by viewModels {
@@ -55,13 +61,19 @@ class MainActivity2 : AppCompatActivity() {
         bindService()
         createNotificationChannel()
         registerReceiver()
-
-
         mViewModel.isSyncFinish.observe(this, {
-            if(it){
-                HomeFragment(mViewModel, mMediaPlayService).apply { loadFragment(this) }
-            }
+            if(it)HomeFragment(mViewModel, mMediaPlayService).apply { loadFragment(this) }
         })
+        custom_navigation_bar.setNavigationChangeListener{ _, positon ->
+            when (positon) {
+                HOME_FRAGMENT -> {
+                    HomeFragment(mViewModel, mMediaPlayService).apply {loadFragment(this)}}
+                LIBRARY_FRAGMENT -> {
+                    LibraryFragment(mMediaPlayService).apply {loadFragment(this)}}
+                SETTING_FRAGMENT -> {
+                    SettingFragment().apply { loadFragment(this)}}
+            }
+        }
     }
 
     private fun loadFragment(fragment: Fragment) {
@@ -138,12 +150,6 @@ class MainActivity2 : AppCompatActivity() {
         }
     }
 
-//    override fun onActivityResult(requestCode: Int, resultCode: Int, data: Intent?) {
-//        super.onActivityResult(requestCode, resultCode, data)
-//        if (resultCode == Activity.RESULT_OK && requestCode == MainActivity.REQUEST_CODE) {
-//            syncMediaProvider()
-//        }
-//    }
 
 
     override fun onDestroy() {

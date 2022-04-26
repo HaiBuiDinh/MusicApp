@@ -12,4 +12,7 @@
 
     <color name="color_bottom_bar_active">#FF000000</color>
     <color name="color_bottom_bar_inactive">#FFFFFFFF</color>
+
+    <color name="blue">#234068</color>
+    <color name="gray">#ABABAB</color>
 </resources>

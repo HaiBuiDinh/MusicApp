@@ -8,10 +8,12 @@ import androidx.lifecycle.lifecycleScope
 import androidx.lifecycle.withCreated
 import androidx.recyclerview.widget.LinearLayoutManager
 import com.aemyfiles.musicapp.Domain.MusicApplication
+import com.aemyfiles.musicapp.Domain.entity.AlbumInfo
 import com.aemyfiles.musicapp.Domain.entity.RecentInfo
 import com.aemyfiles.musicapp.Domain.entity.SongInfo
 import com.aemyfiles.musicapp.External.adapter.CenterZoomLayoutManager
 import com.aemyfiles.musicapp.External.adapter.RecentPlaylistAdapter
+import com.aemyfiles.musicapp.External.adapter.ShowListAlbumAdapter
 import com.aemyfiles.musicapp.External.adapter.ShowListSongAdapter
 import com.aemyfiles.musicapp.External.services.MediaPlayService
 import com.aemyfiles.musicapp.External.utils.Permission
@@ -29,6 +31,7 @@ class HomeFragment(val mMusicViewModel: MusicViewModel, val mService: MediaPlayS
     AbsFragment<HomeController>() {
     lateinit var mPlayListAdapter: RecentPlaylistAdapter
     lateinit var mRecentSongAdapter: ShowListSongAdapter
+    lateinit var mAlbumAdapter: ShowListAlbumAdapter
 
     override fun initController(): HomeController {
         val homeController by viewModels<HomeController> {
@@ -42,7 +45,7 @@ class HomeFragment(val mMusicViewModel: MusicViewModel, val mService: MediaPlayS
         TODO("Not yet implemented")
     }
 
-    fun updateContent() {
+    private fun updateContent() {
         controller?.getRecentPlaylist()?.observe(this@HomeFragment, {
             Log.d("hai.bui1", "initUI: ${it.size}")
             if (it.size <= 0) {
@@ -59,14 +62,28 @@ class HomeFragment(val mMusicViewModel: MusicViewModel, val mService: MediaPlayS
     override fun initUI(view: View?) {
         mPlayListAdapter = RecentPlaylistAdapter()
         recycler_recent_playlist!!.apply {
-            layoutManager = CenterZoomLayoutManager(activity, LinearLayoutManager.HORIZONTAL, false)
+            layoutManager = LinearLayoutManager(activity, LinearLayoutManager.HORIZONTAL, false)
             adapter = mPlayListAdapter
         }
+
         mRecentSongAdapter = ShowListSongAdapter(mService)
         recycler_recent_song!!.apply {
             layoutManager = LinearLayoutManager(activity, LinearLayoutManager.VERTICAL, false)
             adapter = mRecentSongAdapter
         }
+
+        mAlbumAdapter = ShowListAlbumAdapter(mMusicViewModel)
+        recycler_recent_album!!.apply {
+            layoutManager = LinearLayoutManager(activity, LinearLayoutManager.HORIZONTAL, false)
+            adapter = mAlbumAdapter
+        }
+
+        mMusicViewModel.getListAlBum().observe(this, Observer {
+            it?.let { mAlbumAdapter.setData(it as ArrayList<AlbumInfo>) }
+            Log.d("hai.bui1", "getAlbum: onChanged" + it.size)
+        })
+
+
         controller?.getRecentPlaylist()?.observe(this, Observer {
             val listTemp = ArrayList<RecentInfo>()
             listTemp.addAll(it)

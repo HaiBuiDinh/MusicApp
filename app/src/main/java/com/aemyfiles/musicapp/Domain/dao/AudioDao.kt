@@ -32,6 +32,6 @@ interface AudioDao {
     @Query("SELECT * FROM audio_info_table where album_id = :albumId ORDER BY album_name")
     fun getListAudioByAlbumId(albumId: Int): List<SongInfo>
 
-    @Query("SELECT * FROM audio_info_table limit 10")
+    @Query("SELECT * FROM audio_info_table limit 9")
     fun getSongForEmptyRecent(): List<SongInfo>
 }

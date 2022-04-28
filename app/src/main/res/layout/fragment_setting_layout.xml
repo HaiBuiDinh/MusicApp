@@ -7,10 +7,20 @@
 
     <TextView
         android:id="@+id/text1"
-        android:layout_width="match_parent"
-        android:layout_height="match_parent"
-        android:gravity="center"
-        android:text="setting"
-        android:textSize="20sp"/>
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="ahjsdfghuasdgfhasdg"
+        android:textSize="20sp"
+        tools:layout_editor_absoluteX="5dp"
+        tools:layout_editor_absoluteY="395dp" />
+
+    <TextView
+        android:id="@+id/text2"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="aihueruiqwge"
+        android:textSize="10sp"
+        app:layout_constraintBaseline_toBaselineOf="@+id/text1"
+        tools:layout_editor_absoluteX="217dp" />
 
 </androidx.constraintlayout.widget.ConstraintLayout>

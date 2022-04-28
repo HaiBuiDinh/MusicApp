@@ -10,16 +10,16 @@ import androidx.recyclerview.widget.RecyclerView
 import com.aemyfiles.musicapp.Domain.entity.AlbumInfo
 import com.aemyfiles.musicapp.External.utils.ItemType
 import com.aemyfiles.musicapp.External.utils.ThumbnailManager
-import com.aemyfiles.musicapp.Presenter.MusicViewModel
+import com.aemyfiles.musicapp.Presenter.AlbumViewModel
 import com.aemyfiles.musicapp.R
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.GlobalScope
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.withContext
 
-class ShowListAlbumAdapter(private val mViewModel: MusicViewModel) : RecyclerView.Adapter<ShowListAlbumAdapter.ViewHolder>(){
+class ShowListAlbumAdapter(private val mViewModel: AlbumViewModel) : RecyclerView.Adapter<ShowListAlbumAdapter.ViewHolder>(){
 
-    private var mListAlbum = ArrayList<AlbumInfo>()
+    private var mListAlbum : List<AlbumInfo> = ArrayList()
 
     class ViewHolder(itemView: View): RecyclerView.ViewHolder(itemView) {
         val textView: TextView = itemView.findViewById(R.id.title_album)
@@ -27,7 +27,7 @@ class ShowListAlbumAdapter(private val mViewModel: MusicViewModel) : RecyclerVie
         val textViewTotal: TextView = itemView.findViewById(R.id.total_song)
     }
 
-    fun setData(listAlbum: ArrayList<AlbumInfo>) {
+    fun setData(listAlbum: List<AlbumInfo>) {
         listAlbum?.let{
             mListAlbum = it
             notifyDataSetChanged()

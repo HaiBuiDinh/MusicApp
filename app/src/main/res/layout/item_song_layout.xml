@@ -9,7 +9,6 @@
         android:id="@+id/thumbnail_song"
         android:layout_width="?android:attr/actionBarSize"
         android:layout_height="?android:attr/actionBarSize"
-        android:layout_marginStart="20dp"
         android:layout_marginTop="8dp"
         android:layout_marginBottom="8dp"
         android:background="@drawable/rounded_view_not_border"
@@ -17,7 +16,7 @@
         android:scaleType="centerCrop"
         android:src="@drawable/ic_launcher_background"
         app:layout_constraintBottom_toBottomOf="parent"
-        app:layout_constraintStart_toEndOf="@+id/tv_rank"
+        app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent" />
 
 
@@ -25,7 +24,7 @@
         android:id="@+id/layout_title"
         android:layout_width="0dp"
         android:layout_height="wrap_content"
-        android:layout_marginStart="20dp"
+        android:layout_marginStart="16dp"
         android:orientation="vertical"
         app:layout_constraintBottom_toBottomOf="@+id/thumbnail_song"
         app:layout_constraintEnd_toStartOf="@+id/appCompatImageView"
@@ -36,8 +35,8 @@
             android:id="@+id/tv_song_name"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:text="Song name"
             android:maxLines="1"
+            android:text="Song name"
             android:textColor="#262345"
             android:textSize="18sp" />
 
@@ -59,17 +58,5 @@
         app:layout_constraintBottom_toBottomOf="@+id/layout_title"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintTop_toTopOf="@+id/layout_title" />
-
-    <TextView
-        android:id="@+id/tv_rank"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:text="#1"
-        android:textSize="16sp"
-        android:textStyle="bold"
-        app:layout_constraintBottom_toBottomOf="@+id/thumbnail_song"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toTopOf="@+id/thumbnail_song" />
-
 
 </androidx.constraintlayout.widget.ConstraintLayout>

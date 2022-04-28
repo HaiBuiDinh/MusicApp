@@ -20,7 +20,7 @@ class PageAdapter(fm: FragmentManager, private val mController: LibraryControlle
     override fun getItem(position: Int): Fragment {
         return when (position) {
             0 -> SongFragment(mController, mService)
-            1 -> AlbumFragment()
+            1 -> AlbumFragment(mController)
             2 -> PlaylistFragment()
             3 -> FolderFragment()
             else -> SongFragment(mController, mService)

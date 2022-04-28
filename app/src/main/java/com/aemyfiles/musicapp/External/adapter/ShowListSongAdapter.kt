@@ -21,7 +21,6 @@ class ShowListSongAdapter(var mService: MediaPlayService) :
         val textView: TextView = itemView.findViewById(R.id.tv_song_name)
         val imageView: ImageView = itemView.findViewById(R.id.thumbnail_song)
         val artis: TextView = itemView.findViewById(R.id.tv_song_artis)
-        val rank: TextView = itemView.findViewById(R.id.tv_rank)
     }
 
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): ViewHolder {
@@ -38,7 +37,6 @@ class ShowListSongAdapter(var mService: MediaPlayService) :
         holder.imageView.clipToOutline = true
         var context = holder.textView.context
         holder.textView.setTextColor(context.getColor(if(mService.mPlayer.mCurrentPosSong == position) android.R.color.holo_blue_light else android.R.color.black))
-        holder.rank.text = "#${position+1}"
         holder.artis.text = song.artist_name
         holder.itemView.setOnClickListener {
             mService.mPlayer.mQueue.clear()
@@ -60,4 +58,7 @@ class ShowListSongAdapter(var mService: MediaPlayService) :
         notifyDataSetChanged()
     }
 
+    interface SongListener {
+        fun onClickSong()
+    }
 }

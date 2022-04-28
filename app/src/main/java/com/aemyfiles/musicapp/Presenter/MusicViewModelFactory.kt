@@ -4,32 +4,32 @@ import androidx.lifecycle.ViewModel
 import androidx.lifecycle.ViewModelProvider
 import com.aemyfiles.musicapp.External.repository.HomeRepository
 import com.aemyfiles.musicapp.External.repository.LibraryRepository
-import com.aemyfiles.musicapp.External.repository.MusicRepository
+import com.aemyfiles.musicapp.External.repository.MainRepository
 import com.aemyfiles.musicapp.Presenter.controller.HomeController
 import com.aemyfiles.musicapp.Presenter.controller.LibraryController
 import java.lang.IllegalArgumentException
 
-class MusicViewModelFactory(): ViewModelProvider.Factory {
-    lateinit var mMusicRepository: MusicRepository
+class MusicViewModelFactory() : ViewModelProvider.Factory {
+    lateinit var mMainRepository: MainRepository
     lateinit var mHomeRepository: HomeRepository
     lateinit var mLibraryRepository: LibraryRepository
-    constructor(repository: MusicRepository) : this() {
-        mMusicRepository =  repository
+
+    constructor(repository: MainRepository) : this() {
+        mMainRepository = repository
     }
 
     constructor(repository: HomeRepository) : this() {
-        mHomeRepository =  repository
+        mHomeRepository = repository
     }
 
     constructor(repository: LibraryRepository) : this() {
-        mLibraryRepository =  repository
+        mLibraryRepository = repository
     }
 
-
     override fun <T : ViewModel?> create(modelClass: Class<T>): T {
-        if (modelClass.isAssignableFrom(MusicViewModel::class.java)) {
+        if (modelClass.isAssignableFrom(MainController::class.java)) {
             @Suppress("UNCHECKED_CAST")
-            return MusicViewModel(mMusicRepository) as T
+            return MainController(mMainRepository) as T
         } else if (modelClass.isAssignableFrom(HomeController::class.java)) {
             @Suppress("UNCHECKED_CAST")
             return HomeController(mHomeRepository) as T

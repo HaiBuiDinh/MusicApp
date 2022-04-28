@@ -7,27 +7,18 @@ enum class ItemType {
     SONG_TYPE, ALBUM_TYPE, ARTIST_TYPE, PLAYLIST_TYPE, FOLDER_TYPE, NON_TYPE;
 
     companion object {
-        fun getIdByItemType(itemType: ItemType) : Int{
-            return R.drawable.ic_launcher_background;
+        fun getIdByItemType(itemType: ItemType): Int {
+            return when(itemType) {
+                SONG_TYPE -> R.drawable.ic_single_song
+                ALBUM_TYPE -> R.drawable.ic_groove
+                PLAYLIST_TYPE -> R.drawable.playlist
+                ARTIST_TYPE -> R.drawable.man
+                else -> R.drawable.ic_single_song
+            }
         }
     }
 
-    /*
-        public static int getIdByItemType(ItemType itemType) {
-        switch (itemType) {
-            case SONG_TYPE:
-                return R.drawable.music_item;
-            case ALBUM_TYPE:
-            case PLAYLIST_TYPE:
-                return R.drawable.album_item;
-            case ARTIST_TYPE:
-                return R.drawable.artist_item;
-            case FOLDER_TYPE:
-                return R.drawable.folder_item;
-        }
-        return -1;
-    }
 
 
-     */
- }
+
+}

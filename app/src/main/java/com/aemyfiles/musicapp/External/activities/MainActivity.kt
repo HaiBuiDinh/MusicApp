@@ -9,6 +9,9 @@ import android.os.Bundle
 import android.os.IBinder
 import android.util.Log
 import android.view.View
+import android.view.animation.Animation
+import android.view.animation.LinearInterpolator
+import android.view.animation.RotateAnimation
 import androidx.activity.viewModels
 import androidx.appcompat.app.AppCompatActivity
 import androidx.core.view.isVisible
@@ -24,6 +27,7 @@ import com.aemyfiles.musicapp.Presenter.MainController
 import com.aemyfiles.musicapp.Presenter.MusicViewModelFactory
 import com.aemyfiles.musicapp.R
 import kotlinx.android.synthetic.main.activity_main.*
+import kotlinx.android.synthetic.main.activity_song.*
 
 class MainActivity : AppCompatActivity() {
     companion object {
@@ -97,7 +101,11 @@ class MainActivity : AppCompatActivity() {
         song_artis_main.text = mMediaPlayService.mPlayer.mQueue[mMediaPlayService.mPlayer.mCurrentPosSong].artist_name
         if (mMediaPlayService.mPlayer.isPlaying()) {
             btn_main_play.setImageResource(R.drawable.ic_pause)
-        } else btn_main_play.setImageResource(R.drawable.ic_play)
+            rotate(thumbnail_playing)
+        } else {
+            btn_main_play.setImageResource(R.drawable.ic_play)
+            thumbnail_playing.clearAnimation()
+        }
     }
 
     private fun registerReceiver() {
@@ -166,6 +174,14 @@ class MainActivity : AppCompatActivity() {
             intent.putExtra("song path", mMediaPlayService.mPlayer.mQueue[mMediaPlayService.mPlayer.mCurrentPosSong].path)
             startActivity(Intent(this, SongActivity::class.java))
         }
+    }
+
+    private fun rotate(view: View) {
+        val rotateAnim: RotateAnimation = RotateAnimation(0f, 360f, Animation.RELATIVE_TO_SELF, 0.5f, Animation.RELATIVE_TO_SELF,0.5f)
+        rotateAnim.duration = 10000
+        rotateAnim.repeatCount = Animation.INFINITE
+        rotateAnim.interpolator = LinearInterpolator()
+        view.startAnimation(rotateAnim)
     }
 
     override fun onDestroy() {

@@ -39,7 +39,7 @@
             android:visibility="gone">
 
             <ImageView
-                android:id="@+id/thumbnail_palying"
+                android:id="@+id/thumbnail_playing"
                 android:layout_width="48dp"
                 android:layout_height="48dp"
                 android:padding="2dp"

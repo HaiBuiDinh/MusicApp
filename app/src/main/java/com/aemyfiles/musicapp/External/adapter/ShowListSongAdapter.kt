@@ -36,7 +36,7 @@ class ShowListSongAdapter(var mService: MediaPlayService) :
         holder.textView.text = song.display_name
         holder.imageView.clipToOutline = true
         var context = holder.textView.context
-        holder.textView.setTextColor(context.getColor(if(mService.mPlayer.mCurrentPosSong == position) android.R.color.holo_blue_light else android.R.color.black))
+        holder.textView.setTextColor(context.getColor(if (isPlaying(song)) android.R.color.holo_blue_light else android.R.color.black))
         holder.artis.text = song.artist_name
         holder.itemView.setOnClickListener {
             mService.mPlayer.mQueue.clear()
@@ -46,6 +46,12 @@ class ShowListSongAdapter(var mService: MediaPlayService) :
             mService.onTrackPlay(true)
             notifyDataSetChanged()
         }
+    }
+
+    private fun isPlaying(song: SongInfo): Boolean {
+        if(mService.mPlayer.mQueue.isEmpty()) return false
+        if (mService.mPlayer.mQueue[mService.mPlayer.mCurrentPosSong].id == song.id) return true
+        return false
     }
 
     override fun getItemCount(): Int {

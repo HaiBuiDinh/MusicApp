@@ -16,7 +16,6 @@ import com.aemyfiles.musicapp.External.utils.ItemType
 import com.aemyfiles.musicapp.External.utils.Permission
 import com.aemyfiles.musicapp.External.utils.ThumbnailManager
 import com.aemyfiles.musicapp.R
-import com.bumptech.glide.Glide
 import kotlinx.android.synthetic.main.activity_main.*
 import kotlinx.android.synthetic.main.activity_song.*
 
@@ -48,7 +47,7 @@ class SongActivity : AppCompatActivity() {
 
     private fun rotate() {
         val rotateAnim: RotateAnimation = RotateAnimation(0f, 360f, Animation.RELATIVE_TO_SELF, 0.5f, Animation.RELATIVE_TO_SELF,0.5f)
-        rotateAnim.duration = 5000
+        rotateAnim.duration = 10000
         rotateAnim.repeatCount = Animation.INFINITE
         rotateAnim.interpolator = LinearInterpolator()
         biggest_thumbnail_song.startAnimation(rotateAnim)
@@ -73,7 +72,6 @@ class SongActivity : AppCompatActivity() {
         ThumbnailManager.getInstance().loadThumbnail(ThumbnailManager.ThumbnailInfo(biggest_thumbnail_song, song.id, song.path, 320, ItemType.SONG_TYPE))
         song_name.text = song.display_name
         song_artis.text = song.artist_name
-        background_main.background = getDrawable(R.drawable.playlist)
     }
 
     private fun bindService() {

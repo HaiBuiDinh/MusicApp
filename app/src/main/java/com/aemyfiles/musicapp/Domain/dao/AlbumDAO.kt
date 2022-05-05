@@ -26,4 +26,7 @@ interface AlbumDAO {
 
     @Query("SELECT * FROM album_info_table")
     fun getAllAlbum(): LiveData<List<AlbumInfo>>
+
+    @Query("SELECT * FROM album_info_table limit 9")
+    fun getAllAlbumWithLimit(): LiveData<List<AlbumInfo>>
 }

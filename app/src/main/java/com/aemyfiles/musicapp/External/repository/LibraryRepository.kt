@@ -13,6 +13,6 @@ class LibraryRepository(private val database: MusicDatabase) {
     suspend fun updateAlbum(albumInfo: AlbumInfo) = database.albumDao().update(albumInfo)
 
     fun getListSongByAlbumId(album_id: Int): List<SongInfo> {
-        return database.audioDao().getListAudioByAlbumId(album_id)
+        return database.audioDao().getListSongByAlbumId(album_id)
     }
 }

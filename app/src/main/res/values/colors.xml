@@ -15,4 +15,7 @@
 
     <color name="blue">#234068</color>
     <color name="gray">#ABABAB</color>
+
+    <color name="statusbar_color">#FFFFFF</color>
+    <color name="navigationbar_color">#FFFFFF</color>
 </resources>

@@ -16,11 +16,11 @@ class HomeRepository(private val database: MusicDatabase) {
 
     fun getListSongWhenRecentEmpty() = database.audioDao().getSongForEmptyRecent()
 
-    fun getAllAlbum() = database.albumDao().getAllAlbum()
+    fun getAllAlbum() = database.albumDao().getAllAlbumWithLimit()
 
     suspend fun updateAlbum(albumInfo: AlbumInfo) = database.albumDao().update(albumInfo)
 
     fun getListSongByAlbumId(album_id: Int): List<SongInfo> {
-        return database.audioDao().getListAudioByAlbumId(album_id)
+        return database.audioDao().getListSongByAlbumId(album_id)
     }
 }

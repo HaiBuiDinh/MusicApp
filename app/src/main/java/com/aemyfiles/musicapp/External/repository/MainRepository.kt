@@ -1,13 +1,8 @@
 package com.aemyfiles.musicapp.External.repository
 
 import android.content.Context
-import androidx.annotation.WorkerThread
 import com.aemyfiles.musicapp.Domain.MusicDatabase
-import com.aemyfiles.musicapp.Domain.dao.AlbumDAO
-import com.aemyfiles.musicapp.Domain.dao.AudioDao
 import com.aemyfiles.musicapp.Domain.entity.AlbumInfo
-import com.aemyfiles.musicapp.Domain.entity.SongInfo
-import com.aemyfiles.musicapp.External.utils.MediaManager
 
 class MainRepository(private val database: MusicDatabase) {
 

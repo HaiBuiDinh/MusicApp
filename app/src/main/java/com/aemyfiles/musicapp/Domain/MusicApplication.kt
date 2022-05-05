@@ -1,6 +1,7 @@
 package com.aemyfiles.musicapp.Domain
 
 import android.app.Application
+import com.aemyfiles.musicapp.External.repository.DetailRepository
 import com.aemyfiles.musicapp.External.repository.HomeRepository
 import com.aemyfiles.musicapp.External.repository.LibraryRepository
 import com.aemyfiles.musicapp.External.repository.MainRepository
@@ -15,4 +16,5 @@ class MusicApplication : Application() {
     val repository by lazy { MainRepository(database) }
     val homeRepository by lazy { HomeRepository(database) }
     val libraryRepository by lazy { LibraryRepository(database)}
+    val detailRepository by lazy { DetailRepository(database) }
 }

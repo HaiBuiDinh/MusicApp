@@ -8,11 +8,10 @@ import android.content.Intent
 import android.content.IntentFilter
 import android.os.Binder
 import android.os.IBinder
-import com.aemyfiles.musicapp.External.activities.MainActivity
+import com.aemyfiles.musicapp.External.ui.activities.MainActivity
 import com.aemyfiles.musicapp.External.broadcast.NotificationActionService
 import com.aemyfiles.musicapp.External.notification.CreateNotification
 import com.aemyfiles.musicapp.External.notification.Playable
-import com.aemyfiles.musicapp.External.utils.MyPlayer
 
 class MediaPlayService : Service(), Playable {
 

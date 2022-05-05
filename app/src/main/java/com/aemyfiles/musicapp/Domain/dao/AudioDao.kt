@@ -23,14 +23,14 @@ interface AudioDao {
     @Query("delete from audio_info_table")
     suspend fun deleteAll()
 
-    @Query("SELECT * FROM audio_info_table")
+    @Query("SELECT * FROM audio_info_table order by display_name")
     fun getAllSong(): LiveData<List<SongInfo>>
 
-    @Query("SELECT album_id, album_name, COUNT(id) FROM audio_info_table GROUP BY album_name ORDER BY COUNT(id) DESC")
+    @Query("SELECT album_id, album_name, COUNT(id) FROM audio_info_table GROUP BY album_id ORDER BY COUNT(id)")
     fun getAllAlbum(): Cursor
 
     @Query("SELECT * FROM audio_info_table where album_id = :albumId ORDER BY album_name")
-    fun getListAudioByAlbumId(albumId: Int): List<SongInfo>
+    fun getListSongByAlbumId(albumId: Int): List<SongInfo>
 
     @Query("SELECT * FROM audio_info_table ORDER BY RANDOM() limit 9")
     fun getSongForEmptyRecent(): List<SongInfo>

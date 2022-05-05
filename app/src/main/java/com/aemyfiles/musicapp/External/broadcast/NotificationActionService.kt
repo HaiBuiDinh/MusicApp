@@ -18,7 +18,8 @@ class NotificationActionService(private val mService: MediaPlayService): Broadca
                 }
                 CreateNotification.ACTION_PLAY -> {
                     Log.d("hai.bui1", "onReceive: play")
-                    mService.onTrackPlay(false)
+                    var isPlayNewSong = intent.getBooleanExtra("isPlayNewSong", false)
+                    mService.onTrackPlay(isPlayNewSong)
                 }
                 CreateNotification.ACTION_NEXT -> {
                     Log.d("hai.bui1", "onReceive: next")

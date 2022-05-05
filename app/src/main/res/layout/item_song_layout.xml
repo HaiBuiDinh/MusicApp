@@ -6,11 +6,11 @@
     android:layout_height="wrap_content">
 
     <androidx.appcompat.widget.AppCompatImageView
-        android:id="@+id/thumbnail_song"
+        android:id="@+id/im_thumbnail"
         android:layout_width="?android:attr/actionBarSize"
         android:layout_height="?android:attr/actionBarSize"
-        android:layout_marginTop="8dp"
-        android:layout_marginBottom="8dp"
+        android:layout_marginTop="4dp"
+        android:layout_marginBottom="4dp"
         android:background="@drawable/rounded_view_not_border"
         android:outlineProvider="background"
         android:scaleType="centerCrop"
@@ -26,10 +26,10 @@
         android:layout_height="wrap_content"
         android:layout_marginStart="16dp"
         android:orientation="vertical"
-        app:layout_constraintBottom_toBottomOf="@+id/thumbnail_song"
+        app:layout_constraintBottom_toBottomOf="@+id/im_thumbnail"
         app:layout_constraintEnd_toStartOf="@+id/appCompatImageView"
-        app:layout_constraintStart_toEndOf="@+id/thumbnail_song"
-        app:layout_constraintTop_toTopOf="@+id/thumbnail_song">
+        app:layout_constraintStart_toEndOf="@+id/im_thumbnail"
+        app:layout_constraintTop_toTopOf="@+id/im_thumbnail">
 
         <TextView
             android:id="@+id/tv_song_name"
@@ -38,7 +38,7 @@
             android:maxLines="1"
             android:text="Song name"
             android:textColor="#262345"
-            android:textSize="18sp" />
+            android:textSize="16sp" />
 
         <TextView
             android:id="@+id/tv_song_artis"

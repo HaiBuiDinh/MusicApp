@@ -6,10 +6,8 @@ import android.content.Intent
 import android.content.IntentFilter
 import android.util.Log
 import android.view.View
-import androidx.fragment.app.viewModels
 import androidx.lifecycle.Observer
 import androidx.recyclerview.widget.LinearLayoutManager
-import com.aemyfiles.musicapp.Domain.MusicApplication
 import com.aemyfiles.musicapp.Domain.entity.AlbumInfo
 import com.aemyfiles.musicapp.Domain.entity.RecentInfo
 import com.aemyfiles.musicapp.External.ui.activities.MainActivity
@@ -19,9 +17,8 @@ import com.aemyfiles.musicapp.External.ui.adapter.ShowListSongAdapter
 import com.aemyfiles.musicapp.External.services.MediaPlayService
 import com.aemyfiles.musicapp.External.utils.PermissionUtils
 import com.aemyfiles.musicapp.Presenter.AlbumViewModel
-import com.aemyfiles.musicapp.Presenter.controller.MainController
-import com.aemyfiles.musicapp.Presenter.MusicViewModelFactory
 import com.aemyfiles.musicapp.Presenter.controller.HomeController
+import com.aemyfiles.musicapp.Presenter.dagger2.DaggerAppComponent
 import com.aemyfiles.musicapp.R
 import kotlinx.android.synthetic.main.fragment_home_layout.*
 import kotlinx.coroutines.Dispatchers
@@ -29,30 +26,28 @@ import kotlinx.coroutines.GlobalScope
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.withContext
 
-class HomeFragment(val mMainController: MainController, val mService: MediaPlayService) :
+class HomeFragment(val mService: MediaPlayService) :
     AbsFragment<HomeController>() {
     lateinit var mPlayListAdapter: RecentPlaylistAdapter
     lateinit var mRecentSongAdapter: ShowListSongAdapter
     lateinit var mAlbumAdapter: ShowListAlbumAdapter
 
-    override fun initController(): HomeController {
-        val homeController by viewModels<HomeController> {
-            MusicViewModelFactory((activity!!.application as MusicApplication).homeRepository)
-        }
-        return homeController
+    override fun initController() {
+        val component = DaggerAppComponent.builder().application(activity!!.application).activity(activity!!).build()
+        component.inject(this)
     }
 
 
     override fun updateContentView(isServiceConnected: Boolean) {
-        TODO("Not yet implemented")
+        mRecentSongAdapter.notifyDataSetChanged()
     }
 
     private fun updateContent() {
-        controller?.getRecentPlaylist()?.observe(this@HomeFragment, {
+        mController?.getRecentPlaylist()?.observe(this@HomeFragment, {
             Log.d("hai.bui1", "initUI: ${it.size}")
             if (it.size <= 0) {
                 GlobalScope.launch(Dispatchers.IO) {
-                    var list = controller?.getListSongWhenRecentEmpty();
+                    var list = mController?.getListSongWhenRecentEmpty();
                     withContext(Dispatchers.Main) {
                         mRecentSongAdapter.setData(list!!)
                     }
@@ -74,19 +69,19 @@ class HomeFragment(val mMainController: MainController, val mService: MediaPlayS
             adapter = mRecentSongAdapter
         }
 
-        mAlbumAdapter = ShowListAlbumAdapter(controller as AlbumViewModel, activity!!, mService)
+        mAlbumAdapter = ShowListAlbumAdapter(mController as AlbumViewModel, activity!!, mService)
         recycler_recent_album!!.apply {
             layoutManager = LinearLayoutManager(activity, LinearLayoutManager.HORIZONTAL, false)
             adapter = mAlbumAdapter
         }
 
-        controller?.getListAlBum()?.observe(this, Observer {
+        mController?.getListAlBum()?.observe(this, Observer {
             it?.let { mAlbumAdapter.setData(it as ArrayList<AlbumInfo>) }
             Log.d("hai.bui1", "getAlbum: onChanged" + it.size)
         })
 
 
-        controller?.getRecentPlaylist()?.observe(this, Observer {
+        mController?.getRecentPlaylist()?.observe(this, Observer {
             val listTemp = ArrayList<RecentInfo>()
             listTemp.addAll(it)
             if (listTemp.isEmpty()) {
@@ -120,9 +115,8 @@ class HomeFragment(val mMainController: MainController, val mService: MediaPlayS
     private val broadcastReceiver = object : BroadcastReceiver() {
         override fun onReceive(context: Context?, intent: Intent?) {
             Log.d("hai.bui1", "onReceive: home ")
-            mRecentSongAdapter.notifyDataSetChanged()
+            updateContentView(false)
         }
-
     }
 
     private fun registerReceiver() {

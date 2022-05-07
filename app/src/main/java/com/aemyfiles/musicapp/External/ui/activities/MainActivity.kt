@@ -10,10 +10,8 @@ import android.view.View
 import android.view.animation.Animation
 import android.view.animation.LinearInterpolator
 import android.view.animation.RotateAnimation
-import androidx.activity.viewModels
 import androidx.appcompat.app.AppCompatActivity
 import androidx.core.view.isVisible
-import com.aemyfiles.musicapp.Domain.MusicApplication
 import com.aemyfiles.musicapp.External.FragmentUtils
 import com.aemyfiles.musicapp.External.notification.CreateNotification
 import com.aemyfiles.musicapp.External.services.MediaPlayService
@@ -23,9 +21,10 @@ import com.aemyfiles.musicapp.External.ui.fragment.SettingFragment
 import com.aemyfiles.musicapp.External.utils.BroadcastUtils
 import com.aemyfiles.musicapp.External.utils.PermissionUtils
 import com.aemyfiles.musicapp.Presenter.controller.MainController
-import com.aemyfiles.musicapp.Presenter.MusicViewModelFactory
+import com.aemyfiles.musicapp.Presenter.dagger2.DaggerAppComponent
 import com.aemyfiles.musicapp.R
 import kotlinx.android.synthetic.main.activity_main.*
+import javax.inject.Inject
 
 class MainActivity : AppCompatActivity() {
     companion object {
@@ -36,9 +35,8 @@ class MainActivity : AppCompatActivity() {
         const val SETTING_FRAGMENT = 2
     }
 
-    val mViewModel: MainController by viewModels {
-        MusicViewModelFactory((application as MusicApplication).repository)
-    }
+    @Inject
+    lateinit var mViewModel: MainController
 
     lateinit var mMediaPlayService: MediaPlayService
 
@@ -46,7 +44,7 @@ class MainActivity : AppCompatActivity() {
         override fun onServiceConnected(p0: ComponentName?, binder: IBinder?) {
             mMediaPlayService = (binder as MediaPlayService.MyBinder).getService()
             initView()
-            if (PermissionUtils.isPermissionsAllowed(this@MainActivity))HomeFragment(mViewModel, mMediaPlayService).apply { FragmentUtils.enterFragment(this@MainActivity, this, false, null) }
+            if (PermissionUtils.isPermissionsAllowed(this@MainActivity))HomeFragment(mMediaPlayService).apply { FragmentUtils.enterFragment(this@MainActivity, this, false, null) }
             else PermissionUtils.askForPermissions(this@MainActivity)
             if ( mMediaPlayService.mPlayer.mQueue.size > 0) updateControlPlayer()
         }
@@ -60,8 +58,12 @@ class MainActivity : AppCompatActivity() {
         setContentView(R.layout.activity_main)
         bindService()
         registerReceiver()
+
+        val component = DaggerAppComponent.builder().application(application).activity(this).build()
+        component.inject(this)
+
         mViewModel.isSyncFinish.observe(this, {
-            if(it)HomeFragment(mViewModel, mMediaPlayService).apply { FragmentUtils.enterFragment(this@MainActivity, this, false, null) }
+            if(it)HomeFragment( mMediaPlayService).apply { FragmentUtils.enterFragment(this@MainActivity, this, false, null) }
         })
 
     }
@@ -134,7 +136,7 @@ class MainActivity : AppCompatActivity() {
         custom_navigation_bar.setNavigationChangeListener{ _, positon ->
             when (positon) {
                 HOME_FRAGMENT -> {
-                    HomeFragment(mViewModel, mMediaPlayService).apply {FragmentUtils.enterFragment(this@MainActivity, this, false, null)}}
+                    HomeFragment(mMediaPlayService).apply {FragmentUtils.enterFragment(this@MainActivity, this, false, null)}}
                 LIBRARY_FRAGMENT -> {
                     LibraryFragment(mMediaPlayService).apply {FragmentUtils.enterFragment(this@MainActivity, this, false, null)}}
                 SETTING_FRAGMENT -> {

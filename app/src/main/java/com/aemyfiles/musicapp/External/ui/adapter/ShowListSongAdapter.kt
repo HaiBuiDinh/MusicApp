@@ -28,9 +28,8 @@ class ShowListSongAdapter(var mService: MediaPlayService) :
 
     override fun onBindViewHolder(holder: ViewHolder, position: Int) {
         val song: SongInfo = mSongs[position]
-        ThumbnailManager.getInstance().loadThumbnail(
-            ThumbnailManager.ThumbnailInfo(holder.itemView.im_thumbnail, song.id, song.path, 320, ItemType.SONG_TYPE))
         holder.itemView.tv_song_name.text = song.display_name
+        holder.itemView.im_thumbnail.setImageResource(ItemType.getIdByItemType(ItemType.SONG_TYPE))
         holder.itemView.im_thumbnail.clipToOutline = true
         var context = holder.itemView.context
         holder.itemView.tv_song_name.setTextColor(context.getColor(if (isPlaying(song)) android.R.color.holo_blue_light else android.R.color.black))
@@ -44,6 +43,8 @@ class ShowListSongAdapter(var mService: MediaPlayService) :
             OnClickUtils.onClickSong(context, mSongs, position, mService, false)
             notifyDataSetChanged()
         }
+        ThumbnailManager.getInstance().loadThumbnail(
+            ThumbnailManager.ThumbnailInfo(holder.itemView.im_thumbnail, song.id, song.path, ItemType.SONG_TYPE))
     }
 
     private fun isPlaying(song: SongInfo): Boolean {

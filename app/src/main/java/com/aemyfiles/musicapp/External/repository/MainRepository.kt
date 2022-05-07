@@ -3,8 +3,9 @@ package com.aemyfiles.musicapp.External.repository
 import android.content.Context
 import com.aemyfiles.musicapp.Domain.MusicDatabase
 import com.aemyfiles.musicapp.Domain.entity.AlbumInfo
+import javax.inject.Inject
 
-class MainRepository(private val database: MusicDatabase) {
+class MainRepository @Inject constructor(private val database: MusicDatabase) {
 
     private fun getAllAlbumFromSongTable(): List<AlbumInfo> {
         val listAlbum = ArrayList<AlbumInfo>()

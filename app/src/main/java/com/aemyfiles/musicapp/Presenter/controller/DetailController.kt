@@ -8,8 +8,9 @@ import com.aemyfiles.musicapp.External.repository.DetailRepository
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.GlobalScope
 import kotlinx.coroutines.launch
+import javax.inject.Inject
 
-class DetailController(val mRepository: DetailRepository) : ViewModel() {
+class DetailController @Inject constructor(val mRepository: DetailRepository) : ViewModel() {
     val mListItems = MutableLiveData<List<SongInfo>>()
 
     init {

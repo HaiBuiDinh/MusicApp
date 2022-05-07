@@ -11,6 +11,9 @@ import android.widget.ImageView;
 import com.aemyfiles.musicapp.Domain.entity.ItemType;
 
 public class ThumbnailManager {
+
+    public static final String NOTHUMBNAIL = "NOTHUMBNAIL";
+
     private static final int MAX_THREAD = Runtime.getRuntime().availableProcessors() / 2;
     private static final String THUMBNAIL_THREAD_NAME = "thumbnail_thread";
     private int mCurThreadIndex = 0;
@@ -48,14 +51,14 @@ public class ThumbnailManager {
     public void loadThumbnail(ThumbnailInfo info) {
         Object bmp = MemoryCache.getInstance().getCache(info.mKey);
         if (bmp instanceof Bitmap) {
-            if (info.mView != null) info.mView.setImageBitmap((Bitmap) bmp);
+            if (info.mView != null && info.mView.getTag() == null) {
+                info.mView.setImageBitmap((Bitmap) bmp);
+                info.mView.setTag(info.mPath);
+            }
             info.mBmp = (Bitmap) bmp;
             if (info.mCallback != null) info.mCallback.onSuccess(info.mKey, info.mPath, info.mBmp);
         } else {
-            if (bmp instanceof Boolean) {
-                if (info.mView != null)
-                    info.mView.setImageResource(ItemType.Companion.getIdByItemType(info.mItemType));
-            } else {
+            if (!(bmp instanceof Boolean)) {
                 mThumbnailHandler[mCurThreadIndex].sendMessageAtFrontOfQueue(mThumbnailHandler[mCurThreadIndex].obtainMessage(0, info));
                 mCurThreadIndex++;
                 if (mCurThreadIndex >= MAX_THREAD) {
@@ -79,7 +82,7 @@ public class ThumbnailManager {
             if (msg != null) {
                 ThumbnailInfo info = (ThumbnailInfo) msg.obj;
                 if (info != null && info.mPath != null) {
-                    AudioThumbnail audioThumbnail = new AudioThumbnail(info.mPath, info.mSize);
+                    AudioThumbnail audioThumbnail = new AudioThumbnail(info.mPath);
                     info.mBmp = audioThumbnail._createThumbnail();
                 }
                 mUpdateHandler.sendMessageAtFrontOfQueue(mUpdateHandler.obtainMessage(0, info));
@@ -94,12 +97,13 @@ public class ThumbnailManager {
                 if (info != null) {
                     if (info.mBmp != null) {
                         MemoryCache.getInstance().addCache(info.mKey, info.mBmp);
-                        if (info.mView != null) info.mView.setImageBitmap(info.mBmp);
+                        if (info.mView != null && info.mView.getTag() == null) {
+                            info.mView.setImageBitmap(info.mBmp);
+                            info.mView.setTag(info.mPath);
+                        }
                         if (info.mCallback != null) info.mCallback.onSuccess(info.mKey, info.mPath, info.mBmp);
                     } else {
                         MemoryCache.getInstance().addCache(info.mKey, false);
-                        if (info.mView != null)
-                            info.mView.setImageResource(ItemType.Companion.getIdByItemType(info.mItemType));
                     }
                 }
             }
@@ -111,22 +115,20 @@ public class ThumbnailManager {
         public ImageView mView;
         public String mPath;
         public Bitmap mBmp;
-        public int mSize;
         public ItemType mItemType;
         public ThumbnailCallback mCallback;
 
-        public ThumbnailInfo(ImageView view, int key, String path, int size, ItemType itemType) {
+        public ThumbnailInfo(ImageView view, int key, String path, ItemType itemType) {
             mView = view;
             mPath = path;
             mKey = key;
-            mSize = size;
             mItemType = itemType;
         }
 
-        public ThumbnailInfo(int key, String path, int size, ItemType itemType, ThumbnailCallback callback) {
+        public ThumbnailInfo(ImageView view, int key, String path, ItemType itemType, ThumbnailCallback callback) {
+            mView = view;
             mPath = path;
             mKey = key;
-            mSize = size;
             mItemType = itemType;
             mCallback = callback;
         }

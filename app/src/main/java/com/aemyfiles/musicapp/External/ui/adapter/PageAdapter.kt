@@ -12,18 +12,18 @@ import com.aemyfiles.musicapp.External.ui.fragment.pagerfragment.SongFragment
 import com.aemyfiles.musicapp.External.services.MediaPlayService
 import com.aemyfiles.musicapp.Presenter.controller.LibraryController
 
-class PageAdapter(fm: FragmentManager, private val mController: LibraryController, private val mService: MediaPlayService): FragmentPagerAdapter(fm) {
+class PageAdapter(fm: FragmentManager, private val mService: MediaPlayService): FragmentPagerAdapter(fm) {
     override fun getCount(): Int {
         return 4
     }
 
     override fun getItem(position: Int): Fragment {
         return when (position) {
-            0 -> SongFragment(mController, mService)
-            1 -> AlbumFragment(mController, mService)
+            0 -> SongFragment(mService)
+            1 -> AlbumFragment(mService)
             2 -> PlaylistFragment()
             3 -> FolderFragment()
-            else -> SongFragment(mController, mService)
+            else -> SongFragment(mService)
         }
     }
 

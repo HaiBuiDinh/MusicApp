@@ -26,5 +26,10 @@
       <option name="name" value="maven" />
       <option name="url" value="https://jitpack.io" />
     </remote-repository>
+    <remote-repository>
+      <option name="id" value="maven" />
+      <option name="name" value="maven" />
+      <option name="url" value="http://10.252.250.53:8081/lm/content/groups/public/" />
+    </remote-repository>
   </component>
 </project>

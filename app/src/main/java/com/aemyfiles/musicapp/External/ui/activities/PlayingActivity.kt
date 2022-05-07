@@ -65,7 +65,7 @@ class PlayingActivity : AppCompatActivity() {
         val song = mMediaPlayService.mPlayer.mQueue[mMediaPlayService.mPlayer.mCurrentPosSong]
         biggest_thumbnail_song.clipToOutline = true
         ThumbnailManager.getInstance().loadThumbnail(
-            ThumbnailManager.ThumbnailInfo(biggest_thumbnail_song, song.id, song.path, 320, ItemType.SONG_TYPE))
+            ThumbnailManager.ThumbnailInfo(biggest_thumbnail_song, song.id, song.path, ItemType.SONG_TYPE))
         song_name.text = song.display_name
         song_artis.text = song.artist_name
         song_name.isSelected = true

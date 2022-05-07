@@ -11,18 +11,16 @@ import android.util.Log
 import android.view.View
 import androidx.appcompat.app.AppCompatActivity
 import androidx.core.graphics.drawable.toBitmap
-import androidx.fragment.app.viewModels
 import androidx.lifecycle.Observer
 import androidx.recyclerview.widget.LinearLayoutManager
-import com.aemyfiles.musicapp.Domain.MusicApplication
 import com.aemyfiles.musicapp.Domain.entity.ItemType
 import com.aemyfiles.musicapp.External.services.MediaPlayService
 import com.aemyfiles.musicapp.External.thumbnail.ThumbnailManager
 import com.aemyfiles.musicapp.External.ui.activities.MainActivity
 import com.aemyfiles.musicapp.External.ui.adapter.ShowListSongAdapter
 import com.aemyfiles.musicapp.External.utils.BItmapUtils
-import com.aemyfiles.musicapp.Presenter.MusicViewModelFactory
 import com.aemyfiles.musicapp.Presenter.controller.DetailController
+import com.aemyfiles.musicapp.Presenter.dagger2.DaggerAppComponent
 import com.aemyfiles.musicapp.R
 import com.google.android.material.appbar.AppBarLayout
 import kotlinx.android.synthetic.main.fragment_detail_layout.*
@@ -39,11 +37,9 @@ class DetailFragment(val mService: MediaPlayService) : AbsFragment<DetailControl
 
     lateinit var mAdapter:ShowListSongAdapter
 
-    override fun initController(): DetailController {
-        val detailController by viewModels<DetailController> {
-            MusicViewModelFactory((activity!!.application as MusicApplication).detailRepository)
-        }
-        return detailController
+    override fun initController() {
+        val component = DaggerAppComponent.builder().application(activity!!.application).activity(activity!!).build()
+        component.inject(this)
     }
 
     override val resourceId: Int
@@ -63,15 +59,14 @@ class DetailFragment(val mService: MediaPlayService) : AbsFragment<DetailControl
         val thumbnail = bundle.getString(THUMBNAIL)
         collapsing_toolbar_image_view_real.clipToOutline = true
 
-        if(!thumbnail.equals("NOTHUMBNAIL")){
-            ThumbnailManager.getInstance().loadThumbnail(ThumbnailManager.ThumbnailInfo(id, thumbnail, 320, type, object : ThumbnailManager.ThumbnailCallback{
+        if(!thumbnail.equals(ThumbnailManager.NOTHUMBNAIL)){
+            ThumbnailManager.getInstance().loadThumbnail(ThumbnailManager.ThumbnailInfo(collapsing_toolbar_image_view_real, id, thumbnail, type, object : ThumbnailManager.ThumbnailCallback{
                 override fun onSuccess(albumId: Int, path: String?, bitmap: Bitmap?) {
-                    collapsing_toolbar_image_view_real.setImageBitmap(bitmap)
                     collapsing_toolbar_image_view.setImageBitmap(BItmapUtils.blurRenderScript(activity, bitmap!!, 15))
                 }
             }))
         } else{
-            var res = ItemType.getIdByItemType(type)
+            val res = ItemType.getIdByItemType(type)
             collapsing_toolbar_image_view_real.setImageResource(res)
             val bitmap = resources.getDrawable(res).toBitmap()
             collapsing_toolbar_image_view.setImageBitmap(BItmapUtils.blurRenderScript(activity, bitmap!!, 15))
@@ -99,8 +94,8 @@ class DetailFragment(val mService: MediaPlayService) : AbsFragment<DetailControl
             adapter = mAdapter
         }
 
-        controller!!.getListItems().observe(activity!!, Observer {
-            var isEmpty = it == null || it.isEmpty()
+        mController.getListItems().observe(activity!!, Observer {
+            val isEmpty = it == null || it.isEmpty()
             if(isEmpty){
                 empty_view_detail?.visibility = View.VISIBLE
                 rc_list_detail?.visibility = View.GONE
@@ -111,14 +106,14 @@ class DetailFragment(val mService: MediaPlayService) : AbsFragment<DetailControl
             }
         })
 
-        controller!!.getListSongById(id, type)
+        mController.getListSongById(id, type)
         registerReceiver()
     }
 
     private val broadcastReceiver = object : BroadcastReceiver() {
         override fun onReceive(context: Context?, intent: Intent?) {
             Log.d("hai.bui1", "onReceive: all song ")
-            mAdapter?.notifyDataSetChanged()
+            mAdapter.notifyDataSetChanged()
         }
     }
 

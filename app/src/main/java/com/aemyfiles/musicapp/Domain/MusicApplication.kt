@@ -12,7 +12,7 @@ class MusicApplication : Application() {
 
     val applicationScope = CoroutineScope(SupervisorJob())
 
-    val database by lazy { MusicDatabase.getDatabase(this, applicationScope) }
+    val database by lazy { MusicDatabase.getDatabase(this) }
     val repository by lazy { MainRepository(database) }
     val homeRepository by lazy { HomeRepository(database) }
     val libraryRepository by lazy { LibraryRepository(database)}

@@ -24,9 +24,12 @@ interface AlbumDAO {
     @Query("SELECT * FROM album_info_table WHERE album_id = :albumId")
     fun getAlbum(albumId:Int) : AlbumInfo
 
+    @Query("update album_info_table set thumbnail =:thumbnail WHERE album_id = :albumId")
+    fun updateThumbnail(albumId: Int, thumbnail:String)
+
     @Query("SELECT * FROM album_info_table")
-    fun getAllAlbum(): LiveData<List<AlbumInfo>>
+    fun getAllAlbum(): List<AlbumInfo>
 
     @Query("SELECT * FROM album_info_table limit 9")
-    fun getAllAlbumWithLimit(): LiveData<List<AlbumInfo>>
+    fun getAllAlbumWithLimit(): List<AlbumInfo>
 }

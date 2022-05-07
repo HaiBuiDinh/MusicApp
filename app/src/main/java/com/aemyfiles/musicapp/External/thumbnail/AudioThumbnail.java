@@ -16,9 +16,8 @@ public class AudioThumbnail {
     private int mThumbSize = 320;
     private String mPath;
 
-    public AudioThumbnail(String path, int size) {
+    public AudioThumbnail(String path) {
         mPath = path;
-        mThumbSize = size;
     }
 
     public Bitmap _createThumbnail() {

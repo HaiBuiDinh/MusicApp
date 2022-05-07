@@ -3,8 +3,9 @@ package com.aemyfiles.musicapp.External.repository
 import com.aemyfiles.musicapp.Domain.MusicDatabase
 import com.aemyfiles.musicapp.Domain.entity.ItemType
 import com.aemyfiles.musicapp.Domain.entity.SongInfo
+import javax.inject.Inject
 
-class DetailRepository(private val database: MusicDatabase) {
+class DetailRepository @Inject constructor(private val database: MusicDatabase) {
 
     fun getListSongByType(id: Int, type: ItemType): List<SongInfo> {
         when (type) {

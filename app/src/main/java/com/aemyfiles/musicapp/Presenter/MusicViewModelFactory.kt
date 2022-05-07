@@ -12,27 +12,10 @@ import com.aemyfiles.musicapp.Presenter.controller.LibraryController
 import com.aemyfiles.musicapp.Presenter.controller.MainController
 import java.lang.IllegalArgumentException
 
-class MusicViewModelFactory() : ViewModelProvider.Factory {
-    lateinit var mMainRepository: MainRepository
-    lateinit var mHomeRepository: HomeRepository
-    lateinit var mLibraryRepository: LibraryRepository
-    lateinit var mDetailRepository: DetailRepository
-
-    constructor(repository: MainRepository) : this() {
-        mMainRepository = repository
-    }
-
-    constructor(repository: HomeRepository) : this() {
-        mHomeRepository = repository
-    }
-
-    constructor(repository: LibraryRepository) : this() {
-        mLibraryRepository = repository
-    }
-
-    constructor(repository: DetailRepository) : this() {
-        mDetailRepository = repository
-    }
+class MusicViewModelFactory(
+    var mMainRepository: MainRepository, var mHomeRepository: HomeRepository,
+    var mLibraryRepository: LibraryRepository, var mDetailRepository: DetailRepository
+) : ViewModelProvider.Factory {
 
     override fun <T : ViewModel?> create(modelClass: Class<T>): T {
         if (modelClass.isAssignableFrom(MainController::class.java)) {
@@ -44,7 +27,7 @@ class MusicViewModelFactory() : ViewModelProvider.Factory {
         } else if (modelClass.isAssignableFrom(LibraryController::class.java)) {
             @Suppress("UNCHECKED_CAST")
             return LibraryController(mLibraryRepository) as T
-        } else if (modelClass.isAssignableFrom(DetailController::class.java)){
+        } else if (modelClass.isAssignableFrom(DetailController::class.java)) {
             @Suppress("UNCHECKED_CAST")
             return DetailController(mDetailRepository) as T
         }

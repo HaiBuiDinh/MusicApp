@@ -7,8 +7,9 @@ import androidx.lifecycle.viewModelScope
 import com.aemyfiles.musicapp.External.repository.MainRepository
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
+import javax.inject.Inject
 
-class MainController(private val repository: MainRepository) : ViewModel() {
+class MainController @Inject constructor(private val repository: MainRepository) : ViewModel() {
 
     val isSyncFinish = MutableLiveData(false)
 
